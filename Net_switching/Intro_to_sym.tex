@@ -1,0 +1,67 @@
+\documentclass{report}[10 pt]
+
+\title{Introducción a la simulación de redes de comunicaciones}
+\author{Carlos Ortega Marchamalo \& Pablo Collado Soto}
+\date{}
+
+\begin{document}
+
+	\maketitle
+
+	\section{Análisis del enlace Londres - Dublín}
+		Tras configurar \texttt{Comnet III} para llevar a cabo la simulación deseada con el escenario proporcionado fuimos capaces de obtener una gran cantidad de datos "crudos" que fueron posteriormente tratados con \texttt{Excel}. Para poder discutir la validez de las mediciones debemos tener un modelo con el que compararlas con lo que necesitamos estudiar los parámetros que definen nuestro escenario. En este caso el sistema es un enlace de datos con una tasa binaria fija de $R = XXX\ \frac{kbit}{s}$. Podríamos pensar directamente que la mejor forma de caracterizar el sistema es a través de un sistema de colas $M/D/1$, es decir, aquel en el que los tiempos entre llegadas se distribuyen exponencialmente con un tiempo de servicio constante (o determinista, de ahí la \texttt{D}). Además, solo podremos atender a un cliente de manera simultánea sin tener la posibilidad de perder a ninguno pues en ausencia de un parámetro explícito la notación de \textit{Kendall} nos permite asumir que el tamaño total de todo el sistema es $\infty$ con lo que la cola de espera para ser atendido puede crecer sin límite.
+		\\
+		Hemos sido ambiguos al introducir el sistema de manera intencionada porque queremos dejar clara la independencia de un modelo $M/D/1$ de nuestro escenario particular. Para nosotros los clientes serán paquetes de información, el servidor será el propio enlace y el tiempo de servicio será el que el paquete tarde en llegar a su destino. Asimismo, la cola se generará dentro del router conectado a dicho enlace. Es cierto que la memoria de estos equipos es finita con lo que las colas no serán infinitamente grandes pero, dada una situación favorable podremos asumir esta premisa. Si bien es verdad que no todos los sistemas $M/D/1$ son enlaces de datos los enlaces de datos sí pueden caracterizarse a través de una $M/D/1$. La pregunta que nos atañe entonces es, ¿pueden todos los enlaces caracterizarse como modelos $M/D/1$? Veremos que, al contrario de lo que podríamos pensar, esto \textbf{NO} siempre será cierto... Si asumimos que el tiempo de servicio del enlace es determinista podemos estar incurriendo en un fallo sin darnos cuenta. Para caracterizar el modelo debemos estudiar el tiempo de servicio y, si bien la tasa binaria del enlace $R$ es constante ésta no define por completo el tiempo de servicio. Recordemos que el tiempo de transmisión de un paquete de longitud $L$ a través de un enlace con una tasa binaria $R$ viene dado por $t_{trans} = \frac{L}{R}$. Recordando el significado de este tiempo de transmisión vemos que marca la capacidad del enlace en cuanto a la cantidad de datos que puede manejar por unidad de tiempo. Al no tener en cuenta el retardo de la propia información por el enlace vemos pues que la "imagen" no está completa sin hablar del retardo de propagación. \textit{Albert Einstein} demostró que nada es más rápido que la luz que viaja a nada menos que $c \approx 3 \cdot 10^8 \frac{m}{s}$. Ésto implica que los "bits" que volcamos al enlace tardarán un tiempo $t_{prop}$ en llegar al otro extremo. Por tanto, si somos estrictos el tiempo de servicio de cada paquete vendrá dado por $t_{s} = t_{prop} + t_{trans}$. Teniendo el corazón de electrónicos que tenemos podemos pensar que esta expresión es siempre determinista, es decir, los paquetes siempre tendrán la misma longitud con lo que $t_{trans} = cte$. Si dejamos que entre nuestra cabeza de telemático veremos que esto \textbf{NO} es así en nuestro caso... Para comprender qué está ocurriendo tenemos que bucear en las opciones del simulador para ver qué tipo de paquetes se están generando...
+		\\
+
+		Si analizamos los mensajes generados en Dublín y las respuestas de Londres veremos que no tienen la misma naturaleza... En Dublín se generan paquetes con un tamaño que sigue una exponencial ($L_{Dub} \sim exp(i\frac{1}{1000\ B})$) mientras que las respuestas de Londres tienen un tamaño fijo con lo que su distribución sería tan solo una $\delta$ en $L_{Lond} = 200\ B$. Si recuperamos la expresión que nos proporciona el retardo de transmisión veremos que se puede simplificar en una constante $R$ que multiplica a una variable aleatoria $L$ que seguirá una distribución distinta en cada sentido del enlace tal y como hemos visto. Así, el enlace \texttt{Londres --> Dublín} se podrá modelar como un sistema $M/D/1$ mientras que el enlace \texttt{Dublín --> Londres} se comportará como un $M/M/1$.
+		\\
+
+		Solo nos queda justificar por qué podemos asumir que $\lambda_{Dub -> Lond} = \lambda_{Lond -> Dub} = \lambda_{msg}$. Los mensajes se generan en Dublín a razón de $\lambda = 0,2 \frac{msg}{s}$. Estos mensajes tienen que atravesar un enlace antes de llegar al que estamos interesados en analizar. Nos puede asaltar ahora la duda de que algunos mensajes generados por Dublín tengan como destino Madrid en vez de Londres con lo que la tasa de mensajes podría ser distinta. Para cerciorarnos de que esto no es el caso hemos consultado el destino de los mensajes generados en Dublín a través de \texttt{COMNET III} para descubrir que únicamente se generan con destino Londres. Es por ello que podemos asegurar que las llegadas al enlace de interés serán idénticas a las del origen de los mismos. La central de Londres solo se dedicará a devolver los mensajes que le lleguen con lo que la tasa de llegada de los mismos seguirá permaneciendo igual. En definitiva, la tasa de llegad a ambos enlaces será $\lambda_{msg} = \frac{1}{5} \frac{pkt}{s}$.
+		\\
+
+		Conociendo la disposición del problema pasamos a recoger los resultados esperados. Empezamos por comentar el resultado obtenido en el sentido \texttt{Londres --> Dublín}. La simulación nos informa de que el retardo medio de tránsito es de $0,125\ kbps$ y, para nuestra sorpresa, el intervalo de confianza es $0$, esto es, el retardo es \textbf{exactamente} el proporcionado. Si lo comparamos con el resultado de aplicar un modelo $M/M/1$ que es:
+		$$E[T] = \frac{\frac{1}{\mu}}{1 - \rho} \cdot (1 - \frac{\rho}{2})$$
+
+		Donde $\rho = \frac{\lambda}{\mu} = \frac{\lambda}{\frac{1}{T_s}} = \frac{0,2 \frac{msg}{s}}{\frac{128\ kbps}{200 \cdot 8\ b}} = 0,0025$. Conociendo ya todos los datos necesarios llegamos a que $E[T] = 12,516\ ms$. Nos damos cuenta de que los resultados esperados y los obtenidos difieren... Esto nos motiva a encontrar la razón de esta discrepancia. Analizando el escenario nos damos cuenta de que las respuestas generadas por Londres atraviesan un enlace de tasa $R_x = 64\ kbps$ para luego llegar al enlace estudiado de tasa $R_y = 128\ kbps$. Este hecho unido al tamaño determinista de los paquetes provoca una situación inusual. Si nos ponemos en la piel de uno de estos mensajes veremos que tardaremos $\frac{200 \cdot 8}{64\ kbps} = 25 ms$ en atravesar el enlace. En cambio, en el segundo enlace tenemos una tasa $R_y = 128\ kbps$ lo que implica un retardo de transmisión de $12,5\ ms$. Observamos entonces que \textbf{NO} se nos generará una cola en el enlace analizado pues nos da tiempo a transmitir los paquetes por éste antes de que nos llegue uno nuevo. En ausencia de cola no es correcto modelar la situación a través de un $M/D/1$, de ahí el error obtenido anteriormente.
+		\\
+
+		En el segundo enlace tal y como venimos diciendo se puede aplicar un modelo $M/M/1$ pero la situación anterior nos ha llevado a cerciorarnos mediante un análisis más detallado. Si bien es cierto que los mensajes siguen saliendo de un enlace lento a uno rápido ahora su tamaño no se distribuye de manera determinista sino exponencial. Esto impide asumir la desaparición de la cola pues podemos tener ráfagas de paquetes muy grandes que bloqueen a paquetes de tamaño mucho más reducido. Vemos pues que en cuanto entra en juego la estadística no podemos seguir haciendo predicciones y nos debemos poner en manos de modelos y simulaciones. Los valores teóricos obtenidos son:
+
+		$$E[T] = \frac{1}{\mu - \lambda}$$
+
+		Donde $\mu = \frac{R}{E[L]} = \frac{128\ kbps}{1000 \cdot 8\ bit} = 16\ \frac{pkt}{s}$. Y por tanto $E[T] = 0,0633 = 63,29\ ms$
+
+	\section{Retardo de llegada de un paquete desde Dublín a Londres}
+		Una vez que hemos discutido sobre el retardo que sufrirán los paquetes en ambos sentidos nos centramos ahora en el tiempo que transcurre desde que la central de Dublín emite un paquete hasta que éste se recibe en la central de Londres. El trayecto implica tres enlaces diferentes y, siguiendo el mismo razonamiento que antes optaremos por modelarlos como si de un sistema $M/M/1$ se tratara. Tal y como podemos esperar al lidiar con paquetes cuya longitud se distribuye exponencialmente podremos hablar de retardos medios, nunca deterministas. Así, el retardo total se puede obtener como: $E[T_t] = E[T_1] + E[T_2] + E[T_3]$ siendo $E[T_x]$ el retardo medio de tránsito asociado al enlace $x$.\\
+
+		Antes de llevar a cabo la simulación podemos esperar encontrarnos con un error mayor que en los casos anteriores. Ésto se debe a que estamos asumiendo que el proceso de salida de los paquetes de un enlace sigue siendo $Poissoniano$ si las llegadas lo son cosa que \textbf{NO} es necesariamente cierta... No obstante y en ausencia de un modelo $G/G/1$ o mejor dicho, $G/M/1$ que nos permita caracterizar de manera exacta una distribución de llegadas genérica nos vemos obligados a trabajar con la aproximación más correcta aunque sepamos que ésta no es cierta... Asumiremos que los paquetes que son emitidos por un enlace para llegar al siguiente lo harán de acuerdo con un proceso de $Poisson$ de igual tasa con la que llegaron a este primer enlace. Ya habíamos hecho esta suposición en el apartado anterior pero tan sólo en el paso del enlace $A$ al enlace $B$ puesto que estábamos interesados en los retardos en este último. Ahora sin embargo también se verá involucrado el enlace $C$ con lo que tendremos que tolerar este error una segunda vez.\\
+
+		Con todo aclarado pasemos a calcular el retardo en los enlaces $A$ y $C$, ambos con una tasa binaria $R_A = R_B = 64\ kbps$. Modelándolos como sistemas $M/M/1$:
+
+		$$E[T_A] = E[T_B] = \frac{1}{\mu - \lambda} = \frac{1}{\frac{64\ kbps}{1000 \cdot 8\ bit} - 5\ \frac{pkt}{s}} = \frac{1}{8 - 0,2} = 0,1282 \rightarrow 128,205\ ms$$
+
+		Sumando todo:
+
+		$$E[T_t] = \sum_{i = 0}^{i = 3}E[T_i] = E[T_0] + E[T_1] + E[T_2] = 2 \cdot 128,205\ ms + 63,29\ ms = 319,7\ ms$$
+
+		Comparándolo con la media obtenida en la simulación, $356,914\ ms$, observamos que la diferencia es mayor que en el primer caso. Debemos destacar que éstos datos tienen su origen en el mismo experimento que los anteriores de manera que al compararlos no tenemos que contar con el "ruido" que supone la aleatoriedad intrínseca al escenario. También observamos que el valor, si bien no está tan ajustado a la media como antes, pertenece al entorno de centro la media y radio el intervalo de confianza sin duda alguna pues el mínimo se encuentra en $298,702\ ms$. De estos dos resultados se desgrana sin duda que el intervalo de confianza es de $58,21\ ms$.\\
+
+		A lo largo de este primer ejercicio hemos introducido el escenario sobre el que experimentaremos a la vez que hemos comprobado que los modelos matemáticos si bien no capturan la totalidad de las características que definen el sistema, nos proporcionan estimaciones muy ajustadas aún cuando somos conscientes de estar cometiendo un error como en el segundo caso. Adjuntamos a continuación una tabla que contiene las medidas obtenidas y que permite una comparación más sencilla:
+
+		\begin{tabular}{| c | c | c | c | c | c |}
+			\hline
+			& Media [$ms$] & L. Inferior [$ms$] & L. superior [$ms$] & Int. Confianza [$ms$] & Media Teórica [$ms$]\\
+			\hline
+			Retardo $B$ \texttt{D -> L} & 64,38 & 55,12 & 73,65 & 9,26 & 63,29\\
+			\hline
+			Retardo $B$ \texttt{L --> D} & 12,5 & 12,5 & 12,5 & 0 & 12,5\\
+			\hline
+			Retardo pkts \texttt{D -> L} & 356,914 & 298,702 & 415,127 & 58,21 & 319,7\\
+			\hline
+		\end{tabular}
+
+		Nos queda señalar que estos datos se ajustan además a la condición requerida de que el intervalo de confianza sea menor que el $10\%$ de la media. Comprobamos el primero de los casos sin hacer referencias a los demás pues no creemos que mostrar la comprobación ofrezca nada nuevo:
+
+		$$9,26 < 0,1 \cdot 64,38 = $$
+\end{document}
