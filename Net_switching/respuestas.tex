@@ -57,14 +57,16 @@ Respecto a los intervalos de confianza, estos se ven más concretados y reducido
 
 De este modo, podemos observar la trascendencia de modificar un valor y poniendo el foco en un punto en concreto, donde podemos apreciar cambios significativos, pero que, al generalizar para todo el esquema, no tienen una influencia tan grande por cuanto son más los elementos involucrados en el cómputo global.
 
+A modo de resumen para este último caso, incluímos una tabla para poder visualizar más explícitamente esta variaciones comparando ambos casos. Los cálculos matemáticos reaizados para corroborar lo visualizado a través de la simulación del escenario definitivo son exactamente iguales al precedente anterior con la excepción de la variación de la tasa binaria.
+
 \begin{tabular}{| c | c | c | c | c | c |}
 			\hline
 			$40$ iteraciones; $[ms]$ & Media & L. Inferior & L. superior & Int. Confianza & Media Teórica & Media 3er ejercicio\\
 			\hline
-			Retardo $B$ \texttt{D-L} & 57,41 & 53,59 & 61,22 & 3,81 & 63,29 & 57,41\\
+			Retardo $B$ \texttt{D-L} & 28,7 & 26,8 & 30,61 & 1,91 & 31,45 & 57,41\\
 			\hline
-			Retardo $B$ \texttt{L-D} & 12,5 & 12,5 & 12,5 & 0 & 12,5\\
+			Retardo $B$ \texttt{L-D} & 6,25 & 6,25 & 6,25 & 0 & 0 & 12,5\\
 			\hline
-			Retardo pkts \texttt{D-L} & 307,604 & 286,493 & 328,715 & 21,111 & 319,7\\
+			Retardo pkts \texttt{D-L} & 277,082 & 258,473 & 295,69 & 18,608 & 313,82 & 356,914\\
 			\hline
-		\end{tabular}
+\end{tabular}
