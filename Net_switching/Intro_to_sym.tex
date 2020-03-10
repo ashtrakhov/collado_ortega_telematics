@@ -1,7 +1,11 @@
 \documentclass{article}[10pt]
 
-% Crossed less-than operator
+% Crossed less-than operator and Natural Number Set's N
 \usepackage{amssymb}
+
+\usepackage{titling}
+\renewcommand\maketitlehooka{\null\mbox{}\vfill}
+\renewcommand\maketitlehookd{\vfill\null}
 
 % Make margins bigger
 \usepackage{geometry}
@@ -17,57 +21,70 @@
 \date{}
 
 \begin{document}
-
-	\begin{titlepage}
+	\begin{titlingpage}
 		\maketitle
-	\end{titlepage}
+	\end{titlingpage}
 
-	\newpage
 	\tableofcontents
 	\newpage
 
 	\section{Introducción}
 		A lo largo de la carrera nos hemos acostumbrado a analizar gran cantidad de escenarios de manera teórica aproximando sistemas reales por modelos matemáticos que si bien trataban de capturar la esencia de la realidad no podían plasmar todos los detalles que la caracterizan. Con esta introducción en el mundo de la simulación pretendemos descubrir las sutilezas de esta herramienta y aprender a sacarle todo el provecho que podamos.
-	\section{Descripción del backbone de datos}
-		La mayoría de los ejercicios que debemos realizar se relacionan con enlaces de datos que conectan las centrales de \texttt{Dublín} y \texttt{Londres}. En nuestro escenario observamos cómo Dublín generará en un principio mensajes siguiendo un proceso de $Poisson$ con una tasa $\lambda_D = \frac{1}{2}\ \frac{msg}{s}$ y dirigidos a \texttt{Londres}. Más adelante veremos como la tasa de mensajes generados en \texttt{Londres} ($\lambda_L$) resulta ser exactamente la misma teniendo todos ellos la capital dublinesa como destino. Ahora, el tamaño de estos mensajes \textbf{NO} es similar. Los mensajes generados en la central irlandesa tendrán un tamaño distribuido exponencialmente con una media de $1000\ B$, esto es, $L_D ~ exp(\frac{1}{1000 \B}) \rightarrow E[L_D] = 1000\ B$. En cambio las respuestas generadas por la central inglesa tendrán un tamaño fijo de $200\ B$ lo que implica que $L_L ~ \delta(x - 200\ B)$. Veremos cómo esta diferencia tendrá implicaciones importantes en los resultados obtenidos.\\
 
-		Llamamos también la atención a que el único tráfico de la red es el anteriormente descrito con lo que todos estos paquetes transitarán por este enlace. Asimismo observamos que el enlace de interés tiene una tasa binaria $R_{PPL} = XXX\ kbps$ y que las centrales se conectan a los routers en los extremos del mismo a través de enlaces con una tasa binaria $R_{A} = 64\ kbps$ en ambos casos. Señalamos también que estos enlaces son \textit{full-duplex} en el sentido de que podemos transmitir en ambos sentidos de manera simultánea. Esto nos permitirá modelar sendas direcciones de manera indenpendiente lo que facilitará mucho el desarrollo y la aproximación teórica.\\
+	\section{Descripción del backbone de datos}
+		La mayoría de los ejercicios que debemos realizar se relacionan con enlaces de datos que conectan las centrales de \texttt{Dublín} y \texttt{Londres}. En nuestro escenario observamos cómo Dublín generará en un principio mensajes siguiendo un proceso de $Poisson$ con una tasa $\lambda_D = \frac{1}{5}\ \frac{msg}{s}$ y dirigidos a \texttt{Londres}. Más adelante veremos como la tasa de mensajes generados en \texttt{Londres} ($\lambda_L$) resulta ser exactamente la misma teniendo todos ellos la capital dublinesa como destino. Ahora, el tamaño de estos mensajes \textbf{NO} es similar. Los mensajes generados en la central irlandesa tendrán un tamaño distribuido exponencialmente con una media de $1000\ B$, esto es, $L_D ~ exp(\frac{1}{1000\ B}) \rightarrow E[L_D] = 1000\ B$. En cambio las respuestas generadas por la central inglesa tendrán un tamaño fijo de $200\ B$ lo que implica que $L_L ~ \delta(x - 200\ B)$. Veremos cómo esta diferencia tendrá implicaciones importantes en los resultados obtenidos.\\
+
+		Llamamos también la atención a que el único tráfico de la red es el anteriormente descrito con lo que todos estos paquetes transitarán por este enlace. Asimismo observamos que el enlace de interés ($PPL$) tiene una tasa binaria $R_{PPL} = 128\ kbps$ y que las centrales se conectan a los routers en los extremos del mismo a través de los enlaces $A$ y $A^,$ con una tasa binaria $R_A = R_{A^,} = 64\ kbps$ en ambos casos. Señalamos también que estos enlaces son \textit{full-duplex} en el sentido de que podemos transmitir en ambos sentidos de manera simultánea. Esto nos permitirá modelar sendas direcciones de manera indenpendiente lo que facilitará mucho el desarrollo y la aproximación teórica.\\
+
+		Tal y como adelantábamos en el primer párrafo el hecho de que no haya más tráfico que el que hemos recogido arriba supone que las tasas de envío de mensajes serán las mismas en \texttt{Dublín} y \texttt{Londres}, esto es, $\lambda_D = \lambda_L = \lambda = 0,2\ \frac{msg}{s}$. Dado que solo existe una ruta por la que los enlaces pueden fluir nos aseguramos de que todos los paquetes generados en Irlanda llegarán a Reino Unido y viceversa. Dado que la central londinense se limita tan solo a responder los mensajes que le llegan (no "genera" tráfico de manera independiente) se puede comprobar que la igualdad anterior en efecto se mantiene.\\
 
 		Al ser el retardo que sufren los paquetes en el enlace una magnitud a estudiar veremos que esta comprende dos componentes. Por un lado debemos tener en cuenta el tiempo de transmisión del enlace que refleja la cantidad de datos que puede manejar éste de manera concurrente y es definido como $t_{tx} = \frac{L}{R}\ s$ para un paquete de $L\ bits$ y un enlace con una tasa de $R\ bps$. La segunda fuente de latencia viene dada por el propio tiempo que tarda en propagarse la información. Al fin y al cabo en el enlace tenemos señales de naturaleza eléctrica u óptica y tal como demostró \textit{Einstein} nada viaja más rápido que la luz con lo que existirá lo que denominamos un retardo de propagación $t_{prop}$ que dependerá principalmente de la distancia física del enlace. Nosotros hemos ignorado este parámetro por no aportar suficiente información como para asumir las implicaciones que supone tenerlo en cuenta pero siendo estrictos el retardo en estos enlaces vendría dado por $t_t = t_{tx} + t_{prop}$. Nos gustaría resaltar que a pesar de lo que parece implicar la expresión de $t_{tx}$ este retardo no tiene por qué ser constante si alguno de sus parámetros no lo es y tal y como comentábamos el tamaño de los paquetes de Dublín se modelan como una variable aleatoria que es intrínisecamente estadística...\\
 
 		Concluimos pues comentando que a la luz de los parámetros que definen nuestro escenario modelaremos el enlace en el sentido \texttt{Dublín -> Londres} a través de un sistema de colas $M/M/1$ y la conexión en el sentido opuesto como un $M/D/1$. Atendiendo a la notación de \textit{Kendall} vemos como en ambos el tiempo entre llegadas se distribuye exponencialmente, solo se envía un paquete de manera concurrente y se asume una cola infinita en los routers implicados. La diferencia viene por la distribución de los tiempos de envío de estos paquetes. En el primer caso un tamaño exponencial supondrá un tiempo de servicio igualmente distribuido mientras que en el segundo un tamaño constante implicará un tiempo de servicio determinista. Somos conscientes de las limitaciones de estas premisas (los routers no cuentan con memoria infinita por ejemplo) pero dada la situación creemos que son buenas aproximaciones. A lo largo del desarrollo de los diversos experimentos veremos como ésto es efectivamente así. Además analizaremos por qué modelar el enlace de vuelta como una cola $M/D/1$ es incorrecto a pesar de lo que podríamos pensar.\\
 
-	\section{Análisis del enlace Londres - Dublín}
+	\section{Retardo en el enlace \texttt{Londres <-> Dublín}}
+		Con el escenario claro nos disponemos a recoger los primeros datos. La simulación nos informa de que el retardo medio de tránsito en el sentido \texttt{Londres -> Dublín} es de $0,125\ kbps$ y, para nuestra sorpresa, el intervalo de confianza es $0$, esto es, el retardo es \textbf{exactamente} el proporcionado. Si lo comparamos con el resultado de aplicar un modelo $M/D/1$:
 
-		Solo nos queda justificar por qué podemos asumir que $\lambda_{Dub -> Lond} = \lambda_{Lond -> Dub} = \lambda_{msg}$. Los mensajes se generan en Dublín a razón de $\lambda = 0,2 \frac{msg}{s}$. Estos mensajes tienen que atravesar un enlace antes de llegar al que estamos interesados en analizar. Nos puede asaltar ahora la duda de que algunos mensajes generados por Dublín tengan como destino Madrid en vez de Londres con lo que la tasa de mensajes podría ser distinta. Para cerciorarnos de que esto no es el caso hemos consultado el destino de los mensajes generados en Dublín a través de \texttt{COMNET III} para descubrir que únicamente se generan con destino Londres. Es por ello que podemos asegurar que las llegadas al enlace de interés serán idénticas a las del origen de los mismos. La central de Londres solo se dedicará a devolver los mensajes que le lleguen con lo que la tasa de llegada de los mismos seguirá permaneciendo igual. En definitiva, la tasa de llegad a ambos enlaces será $\lambda_{msg} = \frac{1}{5} \frac{pkt}{s}$.\\
+		$$E[T] = \frac{\frac{1}{\mu}}{1 - \rho} \cdot (1 - \frac{\rho}{2});\ \rho = \frac{\lambda}{\mu} = \frac{\lambda}{\frac{1}{T_s}} = \frac{0,2 \frac{msg}{s}}{\frac{128\ kbps}{200 \cdot 8\ b}} = 0,0025$$
 
-		Conociendo la disposición del problema pasamos a recoger los resultados esperados. Empezamos por comentar el resultado obtenido en el sentido \texttt{Londres --> Dublín}. La simulación nos informa de que el retardo medio de tránsito es de $0,125\ kbps$ y, para nuestra sorpresa, el intervalo de confianza es $0$, esto es, el retardo es \textbf{exactamente} el proporcionado. Si lo comparamos con el resultado de aplicar un modelo $M/M/1$ que es:
-		$$E[T] = \frac{\frac{1}{\mu}}{1 - \rho} \cdot (1 - \frac{\rho}{2})$$
+		Conociendo ya todos los datos necesarios llegamos a que $E[T] = 12,516\ ms$. No obstante los resultados teóricos difieren de los obtenidos lo que nos motiva a encontrar la razón de la discrepancia. Observando de nuevo la red nos percatamos de que los mensajes generados por \texttt{Londres} atraviesan un enlace de tasa $R_A = 64\ kbps$ para luego llegar al enlace estudiado de tasa $R_{PPL} = 128\ kbps$. Este hecho unido al tamaño determinista de los paquetes provoca una situación inusual. Si nos ponemos en la piel de uno de estos mensajes veremos que tardaremos $\frac{200 \cdot 8}{64\ kbps} = 25 ms$ en atravesar el enlace entre routers. En cambio, en la segunda conexión tenemos una tasa $R_{PPL} = 128\ kbps$ lo que implica un retardo de transmisión de $12,5\ ms$. Observamos pue que \textbf{NO} se nos generará una cola en el enlace analizado pues nos da tiempo a transmitir los paquetes por éste antes de que nos llegue uno nuevo. En ausencia de cola no es correcto modelar la situación a través de un $M/D/1$, de ahí el error obtenido anteriormente.\\
 
-		Donde $\rho = \frac{\lambda}{\mu} = \frac{\lambda}{\frac{1}{T_s}} = \frac{0,2 \frac{msg}{s}}{\frac{128\ kbps}{200 \cdot 8\ b}} = 0,0025$. Conociendo ya todos los datos necesarios llegamos a que $E[T] = 12,516\ ms$. Nos damos cuenta de que los resultados esperados y los obtenidos difieren... Esto nos motiva a encontrar la razón de esta discrepancia. Analizando el escenario nos damos cuenta de que las respuestas generadas por Londres atraviesan un enlace de tasa $R_x = 64\ kbps$ para luego llegar al enlace estudiado de tasa $R_y = 128\ kbps$. Este hecho unido al tamaño determinista de los paquetes provoca una situación inusual. Si nos ponemos en la piel de uno de estos mensajes veremos que tardaremos $\frac{200 \cdot 8}{64\ kbps} = 25 ms$ en atravesar el enlace. En cambio, en el segundo enlace tenemos una tasa $R_y = 128\ kbps$ lo que implica un retardo de transmisión de $12,5\ ms$. Observamos entonces que \textbf{NO} se nos generará una cola en el enlace analizado pues nos da tiempo a transmitir los paquetes por éste antes de que nos llegue uno nuevo. En ausencia de cola no es correcto modelar la situación a través de un $M/D/1$, de ahí el error obtenido anteriormente.\\
+		Tal y como comentábamos el segundo enlace puede caracterizarse como un $M/M/1$ pero la situación anterior nos ha llevado a cerciorarnos de que no se nos escapa nada. Si bien es cierto que los mensajes siguen saliendo de un enlace lento a uno rápido ahora su tamaño no se distribuye de manera determinista sino exponencial. Ésto impide asumir la desaparición de la cola pues podemos tener ráfagas de paquetes muy grandes que bloqueen a paquetes de tamaño mucho más reducido. En cuanto entra en juego la estadística no podemos seguir haciendo predicciones y nos debemos poner en manos de modelos y simulaciones. Los valores teóricos obtenidos son:
 
-		En el segundo enlace tal y como venimos diciendo se puede aplicar un modelo $M/M/1$ pero la situación anterior nos ha llevado a cerciorarnos mediante un análisis más detallado. Si bien es cierto que los mensajes siguen saliendo de un enlace lento a uno rápido ahora su tamaño no se distribuye de manera determinista sino exponencial. Esto impide asumir la desaparición de la cola pues podemos tener ráfagas de paquetes muy grandes que bloqueen a paquetes de tamaño mucho más reducido. Vemos pues que en cuanto entra en juego la estadística no podemos seguir haciendo predicciones y nos debemos poner en manos de modelos y simulaciones. Los valores teóricos obtenidos son:
+		$$E[T] = \frac{1}{\mu - \lambda}; \mu = \frac{R}{E[L]} = \frac{128\ kbps}{1000 \cdot 8\ bit} = 16\ \frac{pkt}{s} \rightarrow E[T] = 63,29\ ms$$
 
-		$$E[T] = \frac{1}{\mu - \lambda}$$
+		Mostrando los datos recopilados en una tabla junto a los teóricos observamos cómo las diferencias son razonables ya que existe una clara similitud:
 
-		Donde $\mu = \frac{R}{E[L]} = \frac{128\ kbps}{1000 \cdot 8\ bit} = 16\ \frac{pkt}{s}$. Y por tanto $E[T] = 0,0633 = 63,29\ ms$
+		\vskip 3mm
 
-		Resumiendo todo lo que hemos comentado en una tabla llegamos a:
+		\begin{tabular}{| c | c | c | c | c | c |}
+			\hline
+			$[ms]$ & Media & L. Inferior & L. Superior & Int. Confianza & Media Teórica\\
+			\hline
+			Retardo $PPL$ \texttt{D->L} & 64,38 & 55,12 & 73,65 & 9,26 & 63,29\\
+			\hline
+			Retardo $PPL$ \texttt{L->D} & 12,5 & 12,5 & 12,5 & 0 & 12,5\\
+			\hline
+		\end{tabular}
 
-	\section{Retardo de llegada de un paquete desde Dublín a Londres}
-		Una vez que hemos discutido sobre el retardo que sufrirán los paquetes en ambos sentidos nos centramos ahora en el tiempo que transcurre desde que la central de Dublín emite un paquete hasta que éste se recibe en la central de Londres. El trayecto implica tres enlaces diferentes y, siguiendo el mismo razonamiento que antes optaremos por modelarlos como si de un sistema $M/M/1$ se tratara. Tal y como podemos esperar al lidiar con paquetes cuya longitud se distribuye exponencialmente podremos hablar de retardos medios, nunca deterministas. Así, el retardo total se puede obtener como: $E[T_t] = E[T_1] + E[T_2] + E[T_3]$ siendo $E[T_x]$ el retardo medio de tránsito asociado al enlace $x$.\\
+		\vskip 3mm
 
-		Antes de llevar a cabo la simulación podemos esperar encontrarnos con un error mayor que en los casos anteriores. Ésto se debe a que estamos asumiendo que el proceso de salida de los paquetes de un enlace sigue siendo $Poissoniano$ si las llegadas lo son cosa que \textbf{NO} es necesariamente cierta... No obstante y en ausencia de un modelo $G/G/1$ o mejor dicho, $G/M/1$ que nos permita caracterizar de manera exacta una distribución de llegadas genérica nos vemos obligados a trabajar con la aproximación más correcta aunque sepamos que ésta no es cierta... Asumiremos que los paquetes que son emitidos por un enlace para llegar al siguiente lo harán de acuerdo con un proceso de $Poisson$ de igual tasa con la que llegaron a este primer enlace. Ya habíamos hecho esta suposición en el apartado anterior pero tan sólo en el paso del enlace $A$ al enlace $B$ puesto que estábamos interesados en los retardos en este último. Ahora sin embargo también se verá involucrado el enlace $C$ con lo que tendremos que tolerar este error una segunda vez.\\
+		Nótese que dado lo determinista del retardo en el enlace en el sentido \texttt{L -> D} no lo incluiremos en tablas posteriores pues siempre obtendremos los mismos valores para cada celda y creemos que dificulta el manejo e interpretación de los datos para el lector. Asimismo comentamos al final del siguiente apartado por qué estos datos no son válidos si nos atenemos a los criterios de calidad impuestos para nuestros resultados.
 
-		Con todo aclarado pasemos a calcular el retardo en los enlaces $A$ y $C$, ambos con una tasa binaria $R_A = R_B = 64\ kbps$. Modelándolos como sistemas $M/M/1$:
+	\section{Retardo del trayecto \texttt{Dublín -> Londres}}
+		Una vez que hemos discutido sobre el retardo que sufrirán los paquetes en ambos sentidos nos centramos ahora en el tiempo que transcurre desde que la central de \texttt{Dublín} emite un paquete hasta que éste se recibe en la central de \texttt{Londres}. El trayecto implica a tres enlaces diferentes y, siguiendo el mismo razonamiento que antes optaremos por modelarlos como si de un sistema $M/M/1$ se tratara. Tal y como podemos esperar al lidiar con paquetes cuya longitud se distribuye exponencialmente podremos hablar de retardos medios, nunca deterministas. Así, el retardo total se puede obtener como: $E[T_t] = E[T_1] + E[T_2] + E[T_3]$ siendo $E[T_x]$ el retardo medio de tránsito asociado al enlace $x$.\\
 
-		$$E[T_A] = E[T_B] = \frac{1}{\mu - \lambda} = \frac{1}{\frac{64\ kbps}{1000 \cdot 8\ bit} - 5\ \frac{pkt}{s}} = \frac{1}{8 - 0,2} = 0,1282 \rightarrow 128,205\ ms$$
+		Antes de llevar a cabo la simulación podemos esperar encontrarnos con un error mayor que en los casos anteriores. Ésto se debe a que estamos asumiendo que el proceso de salida de los paquetes de un enlace sigue siendo $Poissoniano$ si las llegadas lo son cosa que \textbf{NO} es necesariamente cierta... No obstante y en ausencia de un modelo $G/G/1$ o mejor dicho, $G/M/1$ que nos permita caracterizar de manera exacta una distribución de llegadas genérica nos vemos obligados a trabajar con la aproximación más correcta aunque sepamos que ésta no es cierta. Asumiremos que los paquetes que son emitidos por un enlace para llegar al siguiente lo harán de acuerdo con un proceso de $Poisson$ de igual tasa con la que llegaron a este primer enlace. Ya habíamos hecho esta suposición en el apartado anterior pero tan sólo en el paso del enlace $A$ al enlace $PPL$ puesto que estábamos interesados en los retardos en este último. Ahora sin embargo también se verá involucrado el enlace $A^,$ con lo que tendremos que tolerar este error una segunda vez.\\
+
+		Con todo aclarado pasemos a calcular el retardo en los enlaces $A$ y $A^,$, ambos con una tasa binaria $R_A = 64\ kbps$. Modelándolos como sistemas $M/M/1$:
+
+		$$E[T_1] = E[T_3] = E[T_A] = E[T_{A^,}] = \frac{1}{\mu - \lambda} = \frac{1}{\frac{64\ kbps}{1000 \cdot 8\ bit} - 0,2\ \frac{msg}{s}} = \frac{1}{8 - 0,2} = 128,205\ ms$$
 
 		Sumando todo:
 
-		$$E[T_t] = \sum_{i = 0}^{i = 3}E[T_i] = E[T_0] + E[T_1] + E[T_2] = 2 \cdot 128,205\ ms + 63,29\ ms = 319,7\ ms$$
+		$$E[T_t] = \sum_{i = 1}^{i = 3}E[T_i] = E[T_1] + E[T_2] + E[T_3] = 2 \cdot 128,205\ ms + 63,29\ ms = 319,7\ ms$$
 
-		Comparándolo con la media obtenida en la simulación, $356,914\ ms$, observamos que la diferencia es mayor que en el primer caso. Debemos destacar que éstos datos tienen su origen en el mismo experimento que los anteriores de manera que al compararlos no tenemos que contar con el "ruido" que supone la aleatoriedad intrínseca al escenario. También observamos que el valor, si bien no está tan ajustado a la media como antes, pertenece al entorno de centro la media y radio el intervalo de confianza sin duda alguna pues el mínimo se encuentra en $298,702\ ms$. De estos dos resultados se desgrana sin duda que el intervalo de confianza es de $58,21\ ms$.\\
+		Comparándolo con la media obtenida en la simulación, $356,914\ ms$, observamos que la diferencia es mayor que en el primer caso. Debemos destacar que éstos datos tienen su origen en el mismo experimento que los anteriores de manera que al compararlos no tenemos que contar con el "ruido" que supone la aleatoriedad intrínseca al escenario. También observamos que el valor, si bien no está tan ajustado a la media como antes, pertenece al entorno de centro la media y radio el intervalo de confianza sin duda alguna pues el mínimo se encuentra en $298,702\ ms$. De estos dos resultados se desgrana que el intervalo de confianza es de $58,21\ ms$.\\
 
 		A lo largo de este primer ejercicio hemos introducido el escenario sobre el que experimentaremos a la vez que hemos comprobado que los modelos matemáticos si bien no capturan la totalidad de las características que definen el sistema, nos proporcionan estimaciones muy ajustadas aún cuando somos conscientes de estar cometiendo un error como en el segundo caso. Adjuntamos a continuación una tabla que contiene las medidas obtenidas y que permite una comparación más sencilla:
 
@@ -75,46 +92,38 @@
 
 		\begin{tabular}{| c | c | c | c | c | c |}
 			\hline
-			$[ms]$ & Media & L. Inferior & L. superior & Int. Confianza & Media Teórica\\
+			$[ms]$ & Media & L. Inferior & L. Superior & Int. Confianza & Media Teórica\\
 			\hline
-			Retardo $B$ \texttt{D-L} & 64,38 & 55,12 & 73,65 & 9,26 & 63,29\\
-			\hline
-			Retardo $B$ \texttt{L-D} & 12,5 & 12,5 & 12,5 & 0 & 12,5\\
-			\hline
-			Retardo pkts \texttt{D-L} & 356,914 & 298,702 & 415,127 & 58,21 & 319,7\\
+			Retardo msgs \texttt{D->L} & 356,914 & 298,702 & 415,127 & 58,21 & 319,7\\
 			\hline
 		\end{tabular}
 
 		\vskip 3mm
 
-		Solo nos queda comprobar si, tal y como se exije, estas medidas son de una calidad aceptable. La condición que debemos comprobar es que $\delta < 0,1 \cdot E[X]$ donde $X$ es el parámetro estudiado. Vemos que, al contrario de lo que podríamos esperar ésto \textbf{NO} se cumple. Veremos más adelante el por qué de este resultado y cómo podemos intentar subsanarlo. Adjuntamos una comprobación "fallida" a modo de desmostración:
+		Comprobamos ahora si las medidas recogidas tanto aquí como en el apartado anterior son de una calidad aceptable. La condición que debemos comprobar es que $\delta < 0,1 \cdot E[X]$ donde $X$ es el parámetro estudiado. Vemos que, al contrario de lo que podríamos esperar ésto \textbf{NO} se cumple. Más adelante descubriremos el por qué de este resultado y cómo podemos intentar subsanarlo. Adjuntamos una comprobación "fallida" a modo de desmostración:
 
 		$$9,26 \nless 0,1 \cdot 64,38 = 6,438$$
 
-	\section{Cambiando el valor de $\alpha$}
-		Para comentar el impacto de llevar a cabo este cambio debemos recuperar la definición misma de intervalo de confianza:
+	\section{Variando el valor de $\alpha$}
+		Para comentar el impacto de llevar a cabo este cambio debemos recuperar la definición misma de un intervalo de confianza $\delta$:
 
-		$$Sea\ \bar{x} = \frac{\sum_{i = 1}^N x_i}{N}, \ m \rightarrow P(\bar{x} - \delta \leq \bar{x} \leq m + \delta) = 1 - \alpha$$
+		$$Sea\ \bar{x} = \frac{\sum_{i = 1}^N x_i}{N}, \ m \rightarrow P(\bar{x} - \delta \leq m \leq \bar{x} + \delta) = 1 - \alpha$$
 
-		Esto es, la media real $m$ está contenida en el intervalo $[\bar{x} - \delta, \bar{x} + \delta]$ con probabilidad $1 - \alpha$. A pesar de que ahora estemos modificando $\alpha$ de manera directa no debemos pensar en este parámetro como algo variable sino como en un valor impuesto. Cuanto mayor sea $\alpha$ asistiremos a un intervalo de confianza cada vez más permisivo pues la probabilidad de que $m$ pertenezca a este intervalo será cada vez menor. En consecuencia podremos dar unos intervalos de confianza mucho más ajustados (esto es, $\delta$ decrecerá) pero no por ello más útiles ya que la información con la que trabajamos es en el fondo la misma al seguir efectuando tan solo 10 iteraciones del experimento. Si tenemos un intervalo de confianza tremendamente pequeño veremos que la probabilidad de que el valor real pertenezca al mismo es muy reducida con lo que no estamos sacando nada en claro. ¿Qué más nos da que el intervalo de confianza sea tan preciso si es muy probable que no contenga el valor buscado?.\\
+		Esto es, la media real $m$ está contenida en el intervalo $[\bar{x} - \delta, \bar{x} + \delta]$ con probabilidad $1 - \alpha$. A pesar de que ahora estemos modificando $\alpha$ de manera directa no debemos pensar en este parámetro como algo variable sino como en un valor impuesto. Cuanto mayor sea $\alpha$ asistiremos a un intervalo de confianza cada vez más permisivo pues la probabilidad de que $m$ pertenezca a este intervalo será cada vez menor. En consecuencia podremos dar unos intervalos de confianza mucho más ajustados (esto es, $\delta$ decrecerá) pero no por ello más útiles ya que la información con la que trabajamos es en el fondo la misma al seguir efectuando tan solo $10$ iteraciones del experimento. Si tenemos un intervalo de confianza tremendamente pequeño veremos que la probabilidad de que el valor real pertenezca al mismo es muy reducida con lo que no estamos sacando nada en claro. ¿Qué más nos da que el intervalo de confianza sea tan preciso si es muy probable que no contenga el valor buscado?\\
 
-		Así, se acepta un valor de $\alpha \leq 0,1$ como válido y éste es el que hemos empleado al obtener todos nuestros resultados. Vemos pues que si llevamos a cabo la operación contraria, esto es, reducimos $\alpha$, el intervalo de confianza tenderá a crecer ($\delta$ se hará mayor). Esta interacción entre $\alpha$ y $\delta$ nos da la sensación intuitiva de que ambas están tensando una cuerda por extremos diferentes en el sentido de que si tenemos una probabilidad muy alta de encontrar un valor en un intervalo éste debe ser muy extenso mientras que si la probabilidad se reduce podemos hacer lo mismo con el radio de este entorno. ¿Cuál es la mejor opción? Dependerá de la validez que queramos conferir a nuestros datos así como de las exigencias que tengamos que cumplir y la información que éstos aporten.\\
+		Así, se acepta un valor de $\alpha \leq 0,1$ como válido y éste es el que hemos empleado al obtener todos nuestros resultados. Vemos pues que si llevamos a cabo la operación contraria, esto es, reducimos $\alpha$, el intervalo de confianza tenderá a crecer ($\delta$ se hará mayor). Esta interacción entre $\alpha$ y $\delta$ nos da la sensación intuitiva de que ambas están tensando una cuerda por extremos diferentes en el sentido de que si tenemos una probabilidad muy alta de encontrar un valor en un intervalo éste debe ser muy extenso mientras que si la probabilidad se reduce podemos hacer lo mismo con el radio de este entorno. ¿Cuál es la mejor opción? Dependerá de la validez que queramos conferir a nuestros datos así como de las exigencias que tengamos que cumplir y la información que queramos extraer. Finalmente nos gustaría señalar que dada la naturaleza de las variables aleatorias que estamos estudiando estos intervalos de confianza serán simétricos, esto es, serán entornos de centro $\bar{x}$ y radio $\delta$.\\
 
-		Finalmente nos gustaría señalar que dada la naturaleza de las variables aleatorias que estamos estudiando estos intervalos de confianza serán simétricos, esto es, serán entornos de centro $\bar{x}$ y radio $\delta$.
-
-		Adjuntamos pues los resultados obtenidos al variar el valor de $\alpha$. La probabilidad de que el valor real esté en el intervalo buscado será de $P = 1 - 0,3 = 0,7$:
+		Adjuntamos pues los resultados obtenidos al variar el valor de $\alpha$. La probabilidad de que el valor real esté en el intervalo buscado será de $P(m \in [\bar{x} - \delta, \bar{x} + \delta]) = 1 - 0,3 = 0,7$:
 
 		\vskip 3mm
 
 		\begin{tabular}{| c | c | c | c | c | c |}
 			\hline
-			$\alpha = 0,3\ [ms]$ & Media & L. Inferior & L. superior & Int. Confianza & Media Teórica\\
+			$\alpha = 0,3\ [ms]$ & Media & L. Inferior & L. Superior & Int. Confianza & Media Teórica\\
 			\hline
-			Retardo $B$ \texttt{D-L} & 64,38 & 58,82 & 69,94 & 5,56 & 63,29\\
+			Retardo $PPL$ \texttt{D->L} & 64,38 & 58,82 & 69,94 & 5,56 & 63,29\\
 			\hline
-			Retardo $B$ \texttt{L-D} & 12,5 & 12,5 & 12,5 & 0 & 12,5\\
-			\hline
-			Retardo pkts \texttt{D-L} & 356,914 & 321,992 & 391,838 & 34,923 & 319,7\\
+			Retardo msgs \texttt{D->L} & 356,914 & 321,992 & 391,838 & 34,923 & 319,7\\
 			\hline
 		\end{tabular}
 
@@ -133,13 +142,13 @@
 
 		$$\bar{x} = \frac{\sum_{i = 1}^N x_i}{N}$$
 
-		Si retomamos nuestros conocimientos de estadística veremos cómo la muestra con la que trabajamos es una muestra aleatoria simple pues las variables aleatorias que representan los valores estudiados estáin igualmente distribuidas y son indenpendientes en cada iteración. Nos centraremos en analizar muestras exponencialmente distribuidas pues es la que sigue el tamaño de los paquetes generados en Dublín. Así, la distribución que sigue la superposición de varias variables aleatorias exponencialmente distribuidas es una $n-Earlang$ siendo $n$ el número de variables sumadas. En otras palabaras:
+		La estadística nos asegura que la muestra con la que trabajamos es una muestra aleatoria simple pues las variables aleatorias que representan los valores estudiados están igualmente distribuidas y son indenpendientes en cada iteración. Nos centraremos en analizar muestras exponencialmente distribuidas pues es la que sigue el tamaño de los paquetes generados en \texttt{Dublín}. Así, la distribución que sigue la superposición de varias variables aleatorias exponencialmente distribuidas es una $n-Earlang$ siendo $n$ el número de variables sumadas. En otras palabaras:
 
-		$$Sea\ X_i \sim exp(\lambda) \rightarrow \sum_{i = 0}^N X_i \sim N-Erlang(\lambda)$$
+		$$Sea\ X_i \sim exp(\lambda) \rightarrow \sum_{i = 1}^N X_i \sim N-Erlang(\lambda)$$
 
 		De la función de densidad de una distribución $n-Erlang(\lambda)$ se desgrana que la esperanza viene dada por $\frac{n}{\lambda}$ y que la varianza se obtiene como $\frac{n}{\lambda^2}$. Sabemos además que si $X \sim n-Erlang(\lambda) \rightarrow \alpha \cdot X \sim n-Erlang(\frac{\lambda}{\alpha})$. Por tanto vemos cómo la superposición de varias distribuciones exponenciales acaba por suavizar los datos y otorgarnos la misma media que una sola distribución exponencial con una varianza mucho menor. Para demostrarlo vemos que:
 
-		$$Sea\ Y \sim exp(\lambda) \rightarrow E[Y] = \frac{1}{\lambda}$$
+		$$Sea\ Y_x \sim exp(\lambda)\ \forall\ x \in \mathbb{N} - \{0\} \rightarrow E[Y_x] = \frac{1}{\lambda}$$
 
 		Si sumáramos varias $Y_i$:
 
@@ -153,25 +162,23 @@
 
 		$$\lim_{N \to \infty} V[Y_T^,] = 0 \rightarrow \lim_{N \to \infty} \frac{Y_T^,}{N} = \frac{1}{\lambda}$$
 
-		No hemos hecho más que confirmar de manera simbólica la intuición que hemos ido afianzando durante todas nuestras experiencias con procesos aleatorios: a mayor número de repeticiones más exactos serán los datos que recojamos y más se acercarán estos a la realidad. En nuestro caso esto se traducirá en que a mayor número de repeticiones más pequeño será nuestro intervalo de confianza pues tendremos información como para hacer unas estimaciones más correctas y certeras manteniendo la misma probabilidad de "acertar". Para confirmar nuestras "sospechas" mostraremos los  datos obtenidos. No olvidemos que de nuevo estamos trabajando con $\alpha = 0,1$ al efectuar las simulaciones:
+		No hemos hecho más que confirmar de manera simbólica la intuición que hemos ido afianzando durante todas nuestras experiencias con procesos aleatorios: a mayor número de repeticiones más exactos serán los datos que recojamos y más se acercarán estos a la realidad. En nuestro caso esto se traducirá en que a mayor número de repeticiones más pequeño será nuestro intervalo de confianza pues tendremos información como para hacer unas estimaciones más correctas y certeras manteniendo la misma probabilidad de "acertar". Para confirmar nuestras "sospechas" mostraremos los datos obtenidos. No olvidemos que de nuevo estamos trabajando con $\alpha = 0,1$ al efectuar las simulaciones:
 
 		\vskip 3mm
 
 		\begin{tabular}{| c | c | c | c | c | c |}
 			\hline
-			$20$ iteraciones $[ms]$ & Media & L. Inferior & L. superior & Int. Confianza & Media Teórica\\
+			$20$ iteraciones $[ms]$ & Media & L. Inferior & L. Superior & Int. Confianza & Media Teórica\\
 			\hline
-			Retardo $B$ \texttt{D-L} & 57,41 & 51,60 & 62,50 & 5,45 & 63,29\\
+			Retardo $PPL$ \texttt{D->L} & 57,41 & 51,60 & 62,50 & 5,45 & 63,29\\
 			\hline
-			Retardo $B$ \texttt{L-D} & 12,5 & 12,5 & 12,5 & 0 & 12,5\\
-			\hline
-			Retardo pkts \texttt{D-L} & 311,312 & 277,793 & 344,831 & 33,519 & 319,7\\
+			Retardo msgs \texttt{D->L} & 311,312 & 277,793 & 344,831 & 33,519 & 319,7\\
 			\hline
 		\end{tabular}
 
 		\vskip 3mm
 
-		Señalamos una vez más que en el caso del retardo en el enlace \texttt{Londres --> Dublín} no se aprecia diferencia alguna ya que la medida es determinista dada nuestra situación. Lo incluimos únicamente para brindar una información lo más completa posible. Asimismo, todas estos valores cumplen la condición de que la media sea menor al $10\%$ del intervalo de confianza excepto el último. Incrementando las iteraciones a $40$ podemos poner remedio a esta última pega:
+		Fijémonos en que ahora el primer valor cumple la condición de que la media sea menor que el $10\%$ del intervalo de confianza pero no es así para el segundo. Incrementando las iteraciones a $40$ podemos poner remedio a esta última pega:
 
 		\vskip 3mm
 
@@ -179,56 +186,55 @@
 			\hline
 			$40$ iteraciones $[ms]$ & Media & L. Inferior & L. superior & Int. Confianza & Media Teórica\\
 			\hline
-			Retardo $B$ \texttt{D-L} & 57,41 & 53,59 & 61,22 & 3,81 & 63,29\\
+			Retardo $PPL$ \texttt{D->L} & 57,41 & 53,59 & 61,22 & 3,81 & 63,29\\
 			\hline
-			Retardo $B$ \texttt{L-D} & 12,5 & 12,5 & 12,5 & 0 & 12,5\\
-			\hline
-			Retardo pkts \texttt{D-L} & 307,604 & 286,493 & 328,715 & 21,111 & 319,7\\
+			Retardo msgs \texttt{D->L} & 307,604 & 286,493 & 328,715 & 21,111 & 319,7\\
 			\hline
 		\end{tabular}
 
 		\vskip 3mm
 
-		Tal y como esperábamos obtenemos unos intervalos de confianza aún menores. Además hemos logrado que todos los valores sean "buenos" en los términos que hemos discutido anteriormente. Concluimos pues que incrementar el número de iteraciones supone obtener unos datos más ajustados a la relidad sin tener por ello que renunciar a una gran probabilidad de que los datos reales pertenezcan a nuestro intervalo de confianza. Otra medida que podríamos haber tomado es incrementar el tiempo de ejecución de los distintos experimentos para al final acabar incrementando el número de muestras en aras de lograr el mismo objetivo. Analizaremos esta opción en los siguientes apartados.
+		Tal y como esperábamos obtenemos unos intervalos de confianza aún menores. Además hemos logrado que todos los valores sean "correctos" en los términos que hemos discutido anteriormente. Concluimos pues que incrementar el número de iteraciones supone obtener un intervalo de confianza menor sin tener por ello que renunciar a una gran probabilidad de que los datos reales pertenezcan al mismo. Los datos obtenidos van convergiendo hacia la media real. Otra medida que podríamos haber tomado es incrementar el tiempo de ejecución de los distintos experimentos para al final acabar incrementando el número de muestras en aras de lograr el mismo objetivo. Analizaremos esta opción en los siguientes apartados.
 
 	\section{Bloqueo de llamadas}
-		Para poder llevar acabo una análisis más preciso y que se ajuste lo máximo posible a la realidad exiten dos alternativas. Por un lado y tal y como hemos venido realizando en los casos anteriores, podemos aumentar el número de repeticiones realizadas sobre la simulación. En el caso que ahora nos atañe vamos a hacer uso de la otra vía de la que disponemos para lograr el fin deseado. Así, aumentando el tiempo de duración de la repetición logramos recopilar un número mayor de datos lo que nos permite establecer una relación con lo que sucede realmente.
+		Para poder llevar acabo una análisis más preciso y que se ajuste lo máximo posible a la realidad exiten dos alternativas. Por un lado y tal y como hemos venido realizando en los casos anteriores, podemos aumentar el número de repeticiones realizadas sobre la simulación. En el caso que ahora nos atañe vamos a hacer uso de la otra vía de la que disponemos para lograr el fin deseado. Así, aumentando el tiempo de duración de la repetición logramos recopilar un número mayor de datos lo que nos permite establecer una relación con lo que sucede realmente.\\
 
-		En el escenario del que disponemos, pese a existir diveros posibles destinos de las llamadas realizadas desde Dublín pues esta sede posee conexión tanto con el nodo localizado en Madird así como con el localizado en Londres, llevando a cabo un estudio minucioso de la información obtenida navegando por los distintos menús disponibles en el punto donde se generan las llamadas podemos circiorarnos con total seguridad de que estas únicamente poseen como destino Madrid pues así resulta explicitado en uno de los parámetros de configuración observados.
+		En el escenario del que disponemos (nótese que ahora aludimos a la infraestructura telefónica), pese a existir diveros posibles destinos de las llamadas realizadas desde \texttt{Dublín} pues esta sede posee conexión tanto con el nodo localizado en \texttt{Madrid} así como con el localizado en Londres, llevando a cabo un estudio minucioso de la información obtenida navegando por los distintos menús disponibles en el punto donde se generan las llamadas podemos circiorarnos con total seguridad de que estas únicamente poseen como destino \texttt{Madrid} pues así resulta explicitado en uno de los parámetros de configuración observados.\\
 
-		El modelo empleado para poder llevar a cabo un estudio más sencillo del comportamiento de todo el esquema se corresponde con el de un sistema M/M/N/N, tomando como valor para el número de líneas o canales dedicados el más limitante, en nuestro caso 14, pues este es el valor que antes imposibilita el transcurso de nuevas llamadas ya que, aunque la central que en primer lugar recibe las llamadas dispone de capacidad para cursar un número mayor, si no existen recusos desde ella hacia el exterior las solicitudes no pueden transcurrir, lo que explica la selección del valor que establece el tope en la capacidad del sistema en conjunto.
+		El modelo empleado para poder llevar a cabo un estudio más sencillo del comportamiento de todo el esquema se corresponde con el de un sistema $M/M/N/N$, tomando como valor para el número de líneas o canales dedicados el más limitante, en nuestro caso $14$, pues este es el valor que antes imposibilita el transcurso de nuevas llamadas. Aunque la central que en primer lugar recibe las llamadas dispone de capacidad para cursar un número mayor, si no existen recusos desde ella hacia el exterior las solicitudes no pueden transcurrir, lo que explica la selección del valor que establece el tope en la capacidad del sistema en conjunto.\\
 
-		En referencia a estas llamadas generadas en Dubín y con destino Madrid, el análisis y el estudio del fichero "reports" generado de forma automática por el programa COMNET III en el cual nos apoyamos para poder desarrolar todo este estudio nos proporciona un apartado específico referente a las probabilidades de bloqueo que sufren las llamadas que tiene lugar en el sistema y que son objeto de nuestra investigación.
+		En referencia a estas llamadas generadas en \texttt{Dublín} y con destino \texttt{Madrid}, el análisis y el estudio del fichero \texttt{\textit{reports}} generado de forma automática nos proporciona un apartado específico referente a las probabilidades de bloqueo que sufren las llamadas que tiene lugar en el sistema y que son objeto de nuestra investigación.\\
 
-		De este modo, poniendo el foco de atención en las que en concreto tienen su origen en Dublin nos percatamos de que presentan una probabilidad de bloqueo del 0.132, un valor en cierto modo coherente y concordante con los cálculos matemáticos llevados a cabo en función del sistema planteado en primera instancia, es decir, la probabilidad de bloqueo para un sistema M/M/N/N siendo N = 14 líneas y presentando las llamadas un tiempo de generación (1/lambda) de 30 segundos así como un tiempo de duracón de 3 minutos, ambos parámetros siguiendo un modelo de distribución exponencial y resultando el tráfico generado en cada sede igual a (lambda*(1/nu)), es decir, 6 Erlangs, con lo que en total se tiene un trafico de 12 Erlangs pues debemos considerar los dos sentidos ya que ambos transcurren por las mismas líneas, las 14 mencionadas.
+		De este modo, poniendo el foco de atención en las que en concreto tienen su origen en \texttt{Dublín} nos percatamos de que presentan una probabilidad de bloqueo en tanto por $1$ de $0,132$, un valor en cierto modo coherente y concordante con los cálculos matemáticos llevados a cabo en función del sistema planteado en primera instancia, es decir, la probabilidad de bloqueo para un sistema $M/M/N/N$ viene dada por $E_1(N, A)$ siendo $N = 14$ líneas y presentando las llamadas un tiempo de generación ($\frac{1}{\lambda}$) de $30\ s$ así como un tiempo de duración de $3\ min$, ambos parámetros siguiendo un modelo de distribución exponencial y resultando el tráfico generado en cada sede igual a $\frac{\lambda}{\mu}$), es decir, $6\ Erlangs$, con lo que en total se tiene un trafico de $A = 12\ Erlangs$ pues debemos considerar los dos sentidos ya que ambos transcurren por las mismas $14$ líneas.\\
 
-		Haciendo uso de la calculadora de tráfico de la que disponemos e introduciendo los valores citados anteriormente correspondientes al tráfico total así como el número de líneas disponibles obtenemos un valor bastante próximo al observado mediante los ficheros reports generados con el simulador que empleamos. En nuestro caso, obtenemos una probabilidad de bloqueo teórica de 0.117, un valor realitivamente cercano al anterior y que difiere e forma pequeña en las imperfecciones presentadas por el modelo empleado para tratar de imitar el funcionamiento de todo el conjunto en global.
+		Haciendo uso de la calculadora de tráfico de la que disponemos e introduciendo los valores citados anteriormente correspondientes al tráfico total así como el número de líneas disponibles obtenemos un valor bastante próximo al observado mediante los ficheros \texttt{reports} generados con el simulador que empleamos. En nuestro caso, obtenemos una probabilidad de bloqueo teórica de $0.117$, un valor realitivamente cercano al anterior y que difiere de forma pequeña en las imperfecciones presentadas por el modelo empleado para tratar de imitar el funcionamiento de todo el conjunto en global.\\
 
-		En conclusión, nos percatamos de que se está produciendo un bloqueo de un porcentaje importante de las llamadas que se originan en la sede de Dublín con destino Madrid. Se trata de algo más del 10$\%$ más específicamente, un valor un tanto elevado para lo que sería un valor apropiado y deseado en la realidad, en la que se busca reducir al mínimo esta probabilidad, siendo prácticamente de obligación situarla como máximo en una cifra porcentual, es decir, un valor inferior a la decena y siempre lo más cercano a 0.
+		En conclusión, nos percatamos de que se está produciendo un bloqueo de un porcentaje importante de las llamadas que se originan en la sede de \texttt{Dublín} con destino \texttt{Madrid}. Se trata de algo más del $10\%$ más específicamente, un valor un tanto elevado para lo que sería un valor apropiado y deseado en la realidad, en la que se busca reducir al mínimo esta probabilidad, siendo prácticamente de obligación situarla como máximo en una cifra porcentual, es decir, un valor inferior a la decena y siempre lo más cercano a $0$.\\
 
 	\section{Ocupación del enlace \texttt{Dublín --> Londres}}
-		El programa en el cual nos apoyamos para llevar a cabo un análisis más detenido del transcurso del tráfico tanto de paquetes como de llamadas entre varios nodos, COMNET III, nos permite ir un poco más allá en este estudio y realizar incluso simulaciones sucesivas que difieran en un parámetro en concreto, el cual sufre unas variaciones explicitadas de antemano, lo que posibilita conocer la influencia y transcendencia del mismo en el funcionamiento global de todo el sistema que nos ocupa.
+		El programa en el cual nos apoyamos para llevar a cabo un análisis más detenido del transcurso del tráfico tanto de paquetes como de llamadas entre varios nodos, COMNET III, nos permite ir un poco más allá en este estudio y realizar incluso simulaciones sucesivas que difieran en un parámetro en concreto, el cual sufre unas variaciones explicitadas de antemano, lo que posibilita conocer la influencia y transcendencia del mismo en el funcionamiento global de todo el sistema que nos ocupa.\\
 
-		De este modo, en nuestro caso hemos decidido realizar una serie de simulaciones centrándonos en la trascendencia que presenta el tiempo entre llegadas de mensajes, es decir, (1/lambda), en cada uno de los nodos que son capaces de generar esta información, es decir, tanto en las sedes de Dublín como de Madrid.
+		De este modo, en nuestro caso hemos decidido realizar una serie de simulaciones centrándonos en la trascendencia que presenta el tiempo entre llegadas de mensajes, es decir, $\frac{1}{\lambda}$, en cada uno de los nodos que son capaces de generar esta información, es decir, tanto en las sedes de \texttt{Dublín} como de \texttt{Madrid}.\\
 
-		En todas las variantes del experimento a realizar el parámetro de interés sigue una distribución exponencial, la cual se encuentra caracterizada en cada simulación por uno de los valores incluidos en la lista especificada al llevar a cabo la configuración previa del escenario correspondiente a través de los distintos menús disponibles. Estos datos en concreto son 0.5, 1.0, 2.0, 4.0, 6.0, 8.0 y 10.0, respectivamente, para cada uno de los 7 experimentos de los que consta la cuestión que a estudiar.
+		En todas las variantes del experimento a realizar el parámetro de interés sigue una distribución exponencial, la cual se encuentra caracterizada en cada simulación por uno de los valores incluidos en la lista especificada al llevar a cabo la configuración previa del escenario correspondiente a través de los distintos menús disponibles. Estos datos en concreto son $0,5,\ 1,\ 2,\ 4,\ 6,\ 8$ y $10$, respectivamente, para cada uno de los $7$ experimentos de los que consta la cuestión a estudiar.\\
 
-		Llevando a cabo esta cnfiguración basada en un dato que varía de una simulación a otra podemos analizar cómo responde nuestro esquema ante los diferentes escenarios que tienen lugar, percibiendo qué sucede en los enlaces cuando los paquetes se generan con una frecuencia mayor o cómo a medida que este ritmo de generación disminuye la congestión así también lo hace. De forma análoga ocurre con el retardo que sufren los paquetes desde que son generados hasa que llegan al destino, circunstancia que también podremos apreciar gracias a las particularidades del caso que abordamos.
+		Llevando a cabo esta configuración podemos analizar cómo responde nuestro esquema ante los diferentes escenarios que tienen lugar, percibiendo qué sucede en los enlaces cuando los paquetes se generan con una frecuencia mayor o cómo a medida que este ritmo de generación disminuye la congestión así también lo hace. De forma análoga ocurre con el retardo que sufren los paquetes desde que son generados hasa que llegan al destino, circunstancia que también podremos apreciar gracias a las particularidades del caso que abordamos.
 
-		Tras poner en marcha la prueba y esperar a la conclusión de la misma, nos es posible obtener diversos documentos de estadísticas así como ficheros reports, resultando más precisos los primeros y ajustándose en mayor medida a los valores obtenidos tras llevar a cabo el correspondiente análisis matemático, el cual, mediante el parámetro (ro = lambda/nu) nos informa del factor de utilización u ocupación teórico que debería presentar el canal por el que transcurre todo el tráfico.
+		Tras poner en marcha la prueba y esperar a la conclusión de la misma, nos es posible obtener diversos documentos de estadísticas así como ficheros reports, resultando más precisos los primeros y ajustándose en mayor medida a los valores obtenidos tras llevar a cabo el correspondiente análisis matemático, el cual, mediante el parámetro $\rho = \frac{\lambda}{\mu}$ nos informa del factor de utilización u ocupación teórico que debería presentar el canal por el que transcurre todo el tráfico.\\
 
-		Al establecer el punto de mira en los valores obtenidos y plasmados en el documento de estadística apreciamos que la variación en el parámetro 1/lambda, es decir, el tiempo entre llegadas de mensajes, influye de manera inversamente proporcional en el factor de ocupación del canal. Disminuyendo la frecuencia con la quese generan los paquetes, o lo que es lo mismo, aumentando el tiempo entre la llegada de cada paquete, logramos que cada vez vaya disminuyendo más el número de paquetes lo que descongestiona el canal por el que circulan los mismos. De forma inversa sucedería de manera similar, por lo que una reducción del tiempo entre cada mensaje aumentaría la ocupación del medio transmisor.
+		Al establecer el punto de mira en los valores obtenidos y plasmados en el documento de estadística apreciamos que la variación en el parámetro $\frac{1}{\lambda}$, es decir, el tiempo entre llegadas de mensajes, influye de manera inversamente proporcional en el factor de ocupación del canal. Disminuyendo la frecuencia con la que se generan los paquetes, o lo que es lo mismo, aumentando el tiempo entre la llegada de cada paquete, logramos que cada vez vaya disminuyendo más el número de paquetes lo que descongestiona el canal por el que circulan los mismos. De forma inversa sucedería de manera similar, por lo que una reducción del tiempo entre cada mensaje aumentaría la ocupación del medio transmisor.\\
 
-		En nuestro caso, con el transcurso de los experimentos se produce una disminución en el porcentaje de utilización del canal. Este cambio se produce de forma similar en ambos sentidos.
+		En nuestro caso, con el transcurso de los experimentos se produce una disminución en el porcentaje de utilización del canal. Este cambio se produce de forma similar en ambos sentidos.\\
 
-		Pero la importancia de la fluctuación del parámetro explicitado no se queda aquí. Como era de esperar, su influencia va más allá y presenta su transcendencia en cuanto al tiempo que tardan los paquetes en llegar desde su orígen hasta su destino. Esto tiene su lógica pues cuanto mayor sea la congestión que presente el canal, más tiempo debe esperar el paquete para viajar a través de él.
+		Pero la importancia de la fluctuación del parámetro explicitado no se queda aquí. Como era de esperar, su influencia va más allá y presenta su transcendencia en cuanto al tiempo que tardan los paquetes en llegar desde su orígen hasta su destino. Esto tiene su lógica pues cuanto mayor sea la congestión que presente el canal, más tiempo debe esperar el paquete para viajar a través de él.\\
 
-		Este hecho puede apreciarse en cierto modo y un tanto de forma pequeña al observar los tiempos transcurridos en el sentido desde Dublín hasta Londres mediante las estadísticas disponibles. Sin embargo, la disminución apreciada resulta en cierta medida más bien mínima, siendo esta del orden de algún milisegungo o, de forma equivalente, algunos cientos de microsegundos.
+		Este hecho puede apreciarse en cierto modo y de forma un tanto pequeña al observar los tiempos transcurridos en el sentido desde \texttt{Dublín} hasta \texttt{Londres} mediante las estadísticas disponibles. Sin embargo, la disminución apreciada resulta en cierta medida más bien mínima, siendo esta del orden de algún milisegungo o, de forma equivalente, algunos cientos de microsegundos.\\
 
-		En cambio, no sucede de forma similar en el sentido contrario, es decir, desde Londres hasta Dublín. Esto es debido, tal y como hemos comentado en cuestiones anteriores, a que los paquetes que viajan en esta dirección presentan un tamaño constante y, además, pasan de un enlace más lento a uno más rápido por lo que en el segundo no se forman colas y los tiempos permanecen constantes y invariantes.
+		En cambio, no sucede de forma similar en el sentido contrario, es decir, desde \texttt{Londres} hasta \texttt{Dublín}. Esto es debido, tal y como hemos comentado en cuestiones anteriores, a que los paquetes que viajan en esta dirección presentan un tamaño constante y, además, pasan de un enlace más lento a uno más rápido por lo que en el segundo no se forman colas y los tiempos permanecen constantes y invariantes.\\
 
 		A través de este caso hemos podido constatar la transcendencia que presenta así como la influencia de la variación de un parámetro del sistema global como es el caso del tiempo entre llegadas de mensajes para el grado de ocupación o utilización del canal por el que transcurren los paquetes y su consiguiente relevancia en los retardos sufridos por estos últimos al viajar por el medio transmisor.
 
 	\section{Aumentando la velocidad de los enlaces}
+	FOO
 
 \end{document}
