@@ -15,7 +15,6 @@
 \usepackage{geometry}
 \geometry{
  a4paper,
-%  total = {170mm,257mm},
  left = 19mm,
  right = 19mm,
  top = 15mm,
@@ -171,7 +170,7 @@
 
 		De la función de densidad de una distribución $n-Erlang(\lambda)$ se desgrana que la esperanza viene dada por $\frac{n}{\lambda}$ y que la varianza se obtiene como $\frac{n}{\lambda^2}$. Sabemos además que si $X \sim n-Erlang(\lambda) \rightarrow \alpha \cdot X \sim n-Erlang(\frac{\lambda}{\alpha})$. Por tanto vemos cómo la superposición de varias distribuciones exponenciales acaba por suavizar los datos y otorgarnos la misma media que una sola distribución exponencial con una varianza mucho menor. Para demostrarlo vemos que:
 
-		$$Sea\ Y_x \sim exp(\lambda)\ \forall\ x \in \mathbb{N} - \{0\} \rightarrow E[Y_x] = \frac{1}{\lambda}$$
+		$$Sea\ Y \sim exp(\lambda) \rightarrow E[Y] = \frac{1}{\lambda}$$
 
 		Si sumáramos varias $Y_i$:
 
@@ -179,7 +178,7 @@
 
 		Aplicando la propiedad de la multiplicación de una constante por una variable aleatoria que sigue una $n-Erlang(\lambda)$:
 
-		$$Y_T^, = \frac{1}{N} \cdot Y_T \rightarrow Y_T \sim N-Erlang(N \cdot \lambda) \rightarrow E[Y_T^,] = \frac{1}{\lambda} = E[Y];\ V[Y_T^,] = \frac{1}{N \cdot \lambda}$$
+		$$Y_T^, = \frac{1}{N} \cdot Y_T \rightarrow Y_T \sim N-Erlang(N \cdot \lambda) \rightarrow E[Y_T^,] = \frac{1}{\lambda} = E[Y];\ V[Y_T^,] = \frac{1}{N \cdot \lambda^2}$$
 
 		Esto implica que la media de esta superposición es la de la variable aleatoria estudiada y que a medida que el número de muestras aumente la varianza bajará con lo que nos acercaremos constantemente a la media real. En otras palabras:
 
