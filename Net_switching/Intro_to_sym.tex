@@ -7,25 +7,31 @@
 \renewcommand\maketitlehooka{\null\mbox{}\vfill}
 \renewcommand\maketitlehookd{\vfill\null}
 
+\usepackage{graphicx}
+
 \renewcommand{\contentsname}{Contenidos}
 
 % Make margins bigger
 \usepackage{geometry}
- \geometry{
+\geometry{
  a4paper,
 %  total = {170mm,257mm},
- left = 15mm,
- right = 15mm,
+ left = 19mm,
+ right = 19mm,
  top = 15mm,
  }
 
-\title{Introducción a la simulación de redes de comunicaciones}
+\title{\textbf{Introducción a la simulación de redes de comunicaciones}}
 \author{Carlos Ortega Marchamalo \& Pablo Collado Soto \\ \\ \textbf{Conmutación} \\ \textit{Universidad de Alcalá}}
 \date{Marzo \\ 2020}
 
 \begin{document}
 	\begin{titlingpage}
 		\maketitle
+		\begin{figure}[!htb]
+			\centering
+			\includegraphics[width=1\linewidth]{foto.jpg}
+		\end{figure}
 	\end{titlingpage}
 
 	\tableofcontents
