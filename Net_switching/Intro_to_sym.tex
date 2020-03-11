@@ -233,11 +233,7 @@
 		En conclusión, nos percatamos de que se está produciendo un bloqueo de un porcentaje importante de las llamadas que se originan en la sede de \texttt{Dublín} con destino \texttt{Madrid}. Se trata de algo más del $10\%$ más específicamente, un valor un tanto elevado para lo que sería un valor apropiado y deseado en la realidad, en la que se busca reducir al mínimo esta probabilidad, siendo prácticamente de obligación situarla como máximo en una cifra porcentual, es decir, un valor inferior a la decena y siempre lo más cercano a $0$.
 
 	\section{Ocupación del enlace \texttt{Dublín --> Londres}}
-<<<<<<< HEAD
 		El programa en el cual nos apoyamos para llevar a cabo un análisis más detenido del transcurso del tráfico tanto de paquetes como de llamadas entre varios nodos, COMNET III, nos permite ir un poco más allá en este estudio y realizar incluso simulaciones sucesivas que difieran en un parámetro en concreto, el cual sufre unas variaciones explicitadas de antemano, lo que posibilita conocer la influencia y trascendencia del mismo en el funcionamiento global de todo el sistema que nos ocupa.
-=======
-		El programa en el cual nos apoyamos para llevar a cabo un análisis más detenido del transcurso del tráfico tanto de paquetes como de llamadas entre varios nodos, \texttt{COMNET III}, nos permite ir un poco más allá en este estudio y realizar incluso simulaciones sucesivas que difieran en un parámetro en concreto, el cual sufre unas variaciones explicitadas de antemano, lo que posibilita conocer la influencia y trascendencia del mismo en el funcionamiento global de todo el sistema que nos ocupa.
->>>>>>> ad95a1f29009d459a280732b093ba863de9f762d
 
 		De este modo, en nuestro caso hemos decidido realizar una serie de simulaciones centrándonos en la trascendencia que presenta el tiempo entre llegadas de mensajes, es decir, $\frac{1}{\lambda}$, en cada uno de los nodos que son capaces de generar esta información, es decir, tanto en las sedes de \texttt{Dublín} como de \texttt{Madrid}.
 
@@ -251,11 +247,7 @@
 
 		En nuestro caso, con el transcurso de los experimentos se produce una disminución en el porcentaje de utilización del canal. Este cambio se produce de forma similar en ambos sentidos.
 
-<<<<<<< HEAD
 		Pero la importancia de la fluctuación del parámetro explicitado no se queda aquí. Como era de esperar, su influencia va más allá y presenta su trascendencia en cuanto al tiempo que tardan los paquetes en llegar desde su orígen hasta su destino. Esto tiene su lógica pues cuanto mayor sea la congestión que presente el canal, más tiempo debe esperar el paquete para viajar a través de él.
-=======
-		Pero la importancia de la fluctuación del parámetro explicitado no se queda aquí. Como era de esperar, su influencia va más allá y presenta su trascendencia en cuanto al tiempo que tardan los paquetes en llegar desde su origen hasta su destino. Esto tiene su lógica pues cuanto mayor sea la congestión que presente el canal, más tiempo debe esperar el paquete para viajar a través de él.
->>>>>>> ad95a1f29009d459a280732b093ba863de9f762d
 
 		Este hecho puede apreciarse en cierto modo y de forma un tanto pequeña al observar los tiempos transcurridos en el sentido desde \texttt{Dublín} hasta \texttt{Londres} mediante las estadísticas disponibles. Sin embargo, la disminución apreciada resulta en cierta medida más bien mínima, siendo esta del orden de algún milisegundo o, de forma equivalente, algunos cientos de microsegundos.
 
@@ -270,11 +262,7 @@
 
 		Como comentamos en primera instancia en el momento de realizar un análisis un poco más profundo del esquema del que disponemos, el enlace existente entre Londres y Dublín puede asimilarse a un modelo de colas $M/D/1$ por cuanto los mensajes que son generados en el origen presente una longitud fija y constante que no sufre variaciones en ningún momento por lo que el resultado que produce es siempre el mismo, resultando también fijo el tiempo que tarda en atravesar un paquete el enlace establecido entre los routers de las dos localizaciones citadas previamente. Por su parte, en el sentido contrario el escenario resulta un tanto diferente ya que se corresponde con un sistema $M/M/1$ pues la longitud de los paquetes sigue una distribución exponencial, lo que se traduce en cambios en la misma y, de forma consecuente, en los tiempos que se pueden medir respecto a la disposición existe.
 
-<<<<<<< HEAD
 		En este último apatado de estudio la variación presentada respecto a lo presentado en un primer momento reside en la modificación de la capacidad que poseen los enlaces que unen los routers presentes entre si. Este valor de la tasa binaria pasa a incrementarse hasta los 256kbps, hecho que tendrá su trascendencia y que procedemos a comprobar y a analizar.
-=======
-		En este último apartado de estudio la variación presentada respecto a lo presentado en un primer momento reside en la modificación de la capacidad que poseen los enlaces que unen los routers presentes entre si. Este valor de la tasa binaria pasa a incrementarse hasta los $256\ kbps$, hecho que tendrá su trascendencia y que procedemos a comprobar y a analizar.
->>>>>>> ad95a1f29009d459a280732b093ba863de9f762d
 
 		Si tomamos el documento de estadísticas que se genera después de la ejecución del programa y tras llevar a cabo el consiguiente filtrado de la múltiple información que presenta, nos centramos en el retardo que sufren los mensajes en el enlace situado entre los routers de \texttt{Dublín} y \texttt{Londres} así como en el retardo de los paquetes entregados por la fuente de mensajes de \texttt{Dublín}.
 
