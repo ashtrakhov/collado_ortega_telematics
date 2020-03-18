@@ -38,7 +38,7 @@
 			\hline
 			Tomas TV-RF/SAT & Televés & 5226\\
 			\hline
-			Cable Coaxial T-100 Plus  & Televés & 2141\\
+			Cable Coaxial T-100 Plus & Televés & 2141\\
 			\hline
 			Cable Cobre CTX Cu & Televés & 2138\\
 			\hline
@@ -78,5 +78,63 @@
 
 		\subsection{Red Telefónica y de Datos}
 			Ya en la introducción
+
+	\section{Cálculos realizados}
+		Para llevar a cabo los cálculos de las pérdidas producidas en toda la instalación desplegada a lo largo de la vivienda así como su posterior comprobación mediante la herramienta de silumación de la que disponemos hemos debido tener en cuenta una serie de consideraciones. Por una parte, hemos llevado a cabo una aproximación de todas las mediciones y distancias pues en los planos proporcionados con anterioridad por el arquitecto encargado de todo el diseño del tendido para televisión no se explicitaba el recorrido seguido por los cables desde el registro primario hasta cada una de las cuatro tomas de televisión existentes en el inmueble, empleando para ello las distancias y mediciones apreciables a través del pertinente estudio de la planta acotada.\\
+
+		De forma similar, la correspondiente verificación con el programa \texttt{Cast60} nos ha presentado ciertas dificultades pues algunos de los componentes presentes en nuestra entramado real no presentan su equivalente en la simulación, siendo esto una gran limitación para corroborar la fidelidad de los cálculos.\\
+
+		Tal y como comentábamos con anterioridad disponíamos de una fuente de alimentación que además de llevar a cabo su cometido requerido se encargaba de establecer una conexión directa con una de las tomas existentes. He aquí donde, debido a las dificultades ya citadas previamente, hemos tenido que realizar una serie de suposiciones, como es el caso de cuál de las 4 terminaciones es alcanzada por la salida de la fuente de alimentación. Así, hemos considerado que se trata de la que se encuentra más próxima al registro priario, es decir, a una menor distancia.\\
+
+		Las mediciones obtenidas tras el estudio de la planta acotada necesarias para nuestro análisis son:
+
+		\begin{tabular}{| c | c | c |}
+			\hline
+			\textbf{Distancias} & \textbf{Valor} \textbf{Unidad}\\
+			\hline
+			Antena a amplificador & 1 & m\\
+			\hline
+			Amplificador a fuente de alimentación & 3 & m\\
+			\hline
+			Fuente de alimentación a PAU & 0.5 & m\\
+			\hline
+			Fuente de alimentación a toma 1 & 5,25 & m\\
+			\hline
+			PAU a toma 2 & 6,423 & m\\
+			\hline
+			PAU a toma 3 & 11,752 & m\\
+			\hline
+			PAU a toma 4  & 19,805 & m\\
+			\hline
+		\end{tabular}
+
+		Para realizar los cálculos correspondiente hemos echado mano del catálogo de dispositivos de Televes disponible en el aula virtual de la asignatura así como de la propia página web de la mencionada companía para el caso de aquellos elementos no presentes en el referido folleto.\\
+
+		De este modo, la información de nuestro interés obtenida es:
+
+		\begin{tabular}{| c | c | c |}
+			\hline
+			\textbf{Elemento} & \textbf{Valor} \textbf{Unidad}\\
+			\hline
+			Pérdidas de inserción fuente de alimentación (5495) & 4 & dB\\
+			\hline
+			Pérdidas de inserción PAU (5436) & 7 & dB\\
+			\hline
+			Pérdidas cable (2138) & 0.18 & dB/m\\
+			\hline
+			Pérdidas cable (2141) & 0.15 & dB/m\\
+			\hline
+			Pérdidas deriación toma (5226) & 0.6 & dB\\
+			\hline
+			Ganancia amplificador (5356) & 40 (+/-) [0 - 15] & dB\\
+			\hline
+		\end{tabular}
+
+		Tras haber realizado los pertinentes cálculos en cuanto a las pérdidas de toda la instalación, sumando las presentadas por los cables, los dispositivos intermedios como la fuente de alimentación y el punto de acceso de usuario y las restantes tomas de televisión, hemos apreciado una considerable diferencia entre aquella terminación que estable una unión directa con la fuente de alimentación y las que deben pasar previamente por la PAU.\\
+
+		Para evidenciar más esta variación presentamos los cálculos para el primero de los casos y uno de los equivalentes en el segundo, teniendo en cuenta las mediciones y parámetros presentados con anterioridad:
+
+		$$P(dB)toma1 = 4*0.18 + 4 + 0 + 0 + 5.25*0.15 + 0.6 = 6.1075$$
+		$$P(dB)toma1 = 4*0.18 + 4 + 0.5*0.15 + 7 + 6.423*0.15 + 0.6 = 13.35845$$
 
 \end{document}
