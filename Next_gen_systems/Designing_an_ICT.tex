@@ -1,10 +1,20 @@
 \documentclass{article}[12 pt]
 
+% Make margins bigger
+\usepackage{geometry}
+\geometry{
+ a4paper,
+%  left = 19mm,
+%  right = 19mm,
+%  top = 15mm,
+ }
+
 \title{Diseñando la ICT de un chalet}
 \author{Carlos Ortega Marchamalo \& Pablo Collado Soto}
 \date{}
 
 \begin{document}
+
 	\maketitle
 
 	\section{Introducción}
@@ -12,41 +22,47 @@
 
 		Además de estudiar la \textbf{ICT} propiamente dicha hemos decidido también abordar la red telefónica y de datos. Al situarse el inmueble en una zona alejada de grandes ciudades veremos que el acceso es todavía a través de una línea ADSL (\textbf{A}bonado \textbf{Digital} \textbf{A}simétrico) por lo que lo compararemos con los accesos actuales basados en su mayoría en fibra óptica.\\
 
-		Las frecuencias analiadas se encuentran en la banda \textbf{UHF} (\textbf{U}ltra \textbf{H}igh \textbf{F}requencies) ya que nos centraremos en la infraestructura de \textbf{T}elevisión \textbf{D}igital \textbf{T}errestre. A fin de no alargar el informe de manera innecesaria señalamos que todas las atenuaciones y características de los equipos analiados se ciñen a esta banda.\\
+		Las frecuencias analizadas se encuentran en la banda \textbf{UHF} (\textbf{U}ltra \textbf{H}igh \textbf{F}requencies) ya que nos centraremos en la infraestructura de \textbf{T}elevisión \textbf{D}igital \textbf{T}errestre. A fin de no alargar el informe de manera innecesaria señalamos que todas las atenuaciones y características de los equipos analizados se ciñen a esta banda.\\
 
 	\section{Fuentes de información}
 		Con la intención de ajustarnos en la medida de lo posible a la realidad hemos consultado los planos de obra de la vivienda. No obstante hemos encontrado que, si bien se aludía a que la ICT vigente en el momento de la construcción era \textbf{XXXX}, no se incluían detalles sobre la misma. Tan solo se señalaba la localización de una serie de tomas de televisión y teléfono sin mostrar las canalizaciones hasta las mismas.\\
 
-		Debido a esto, y tras consultar con el arquitecto de la vivienda nos decidimos a investigar la localización del registro primario para intentar reconstruir la ICT a partir de los equipos y líneas de transmisión instaladas. Asimismo, a la hora de calcular las atenuaciones en los cables hemos aproximado las distancias a partir de la planta acotada que se incluía en los planos de la vivienda. A pesar de que esto aporta una mayor fidelidad a los resultados debemos reconocer que no se ajustan de manera totalmente estricata a la realidad. Al observar los equipos instalados hemos visto que las líneas de transmisión discurren por el interior de los distintos tabiques, suelos y paredes con lo que deberemos tolerar esta pequeña inexactitud.
+		Debido a esto, y tras consultar con el arquitecto de la vivienda nos decidimos a investigar la localización del registro primario para intentar reconstruir la ICT a partir de los equipos y líneas de transmisión instaladas. Asimismo, a la hora de calcular las atenuaciones en los cables hemos aproximado las distancias a partir de la planta acotada que se incluía en los planos de la vivienda. A pesar de que esto aporta una mayor fidelidad a los resultados debemos reconocer que no se ajustan de manera totalmente estricta a la realidad. Al observar los equipos instalados hemos visto que las líneas de transmisión discurren por el interior de los distintos tabiques, suelos y paredes con lo que deberemos tolerar esta pequeña inexactitud.
 
 	\section{Equipamiento}
 		Con tan solo retirar una cubierta de PVC hemos tenido acceso al registro primario del inmueble. Dentro hemos encontrado el siguiente equipo:
 
-		\begin{tabular}{| c | c | c |}
-			\hline
-			\textbf{Equipo} & \textbf{Fabricante} \textbf{Referencia}\\
-			\hline
-			Fuente de alimentación con 2 salidas & Televés & 5495\\
-			\hline
-			PAU/Repartidor & Televés & 5436\\
-			\hline
-			Punto de Terminación de Red & Telefónica & No Disponible\\
-			\hline
-			Splitter & Telefónica & No Disponible\\
-			\hline
-			Router/Módem & Telefónica & No Disponible\\
-			\hline
-			Tomas TV-RF/SAT & Televés & 5226\\
-			\hline
-			Cable Coaxial T-100 Plus & Televés & 2141\\
-			\hline
-			Cable Cobre CTX Cu & Televés & 2138\\
-			\hline
-		\end{tabular}
+		\vskip 3mm
 
-		Entre el equipo observado encontramos 2 elementos que \textit{a priori} nos resultan extraños. En primer lugar encontramos una fuente de alimentación. Si pensamos en la estructura de la ICT nos daremos cuenta de que la señal es captada por una antena diseñada para la banda de televisión y que esta deberá ser amplificada dada su aplitud tan reducida. Si modeláramos el circuito esta antena sería nuestro generador y la carga equivalente vendría a representar tanto las líneas de distribución como las cargas de los equipos conectados a las mismas.\\
+		\begin{center}
+			\begin{tabular}{| c | c | c |}
+				\hline
+				\textbf{Equipo} & \textbf{Fabricante} & \textbf{Referencia}\\
+				\hline
+				Fuente de alimentación con 2 salidas & Televés & 5495\\
+				\hline
+				PAU/Repartidor & Televés & 5436\\
+				\hline
+				Punto de Terminación de Red & Telefónica & No Disponible\\
+				\hline
+				Splitter & Telefónica & No Disponible\\
+				\hline
+				Router/Módem & Telefónica & No Disponible\\
+				\hline
+				Tomas TV-RF/SAT & Televés & 5226\\
+				\hline
+				Cable Coaxial T-100 Plus & Televés & 2141\\
+				\hline
+				Cable Cobre CTX Cu & Televés & 2138\\
+				\hline
+			\end{tabular}
+		\end{center}
 
-		El hecho de que la señal de entrada a la \textbf{ICT} sea tan pequeña nos lleva a preguntarnos por qué no hemos incluido un amplificador en la tabla anterior. Destacamos pues que este amplificador de cabecera no se encuentra en el registro primario sino más cerca de la antena. Es por ello que no hemos tenido acceso al equipo en cuestión pero trás indagar llegamos a una configuración de equipos de Televés muy común en viviendas de este tipo que podemos ver en la figura \textbf{INSERTAR FIGURA Y REFERENCIA}. En ellas se incluye, como no podría ser de otra manera, un amplificador de cabecera con referencia \textbf{XXX}. Pasamos a hacer un pequeño inciso sobre el cálculo de ganancias y su uso a la hora de obtener las atenuaciones en la infraestructura analizada\\
+		\vskip 3mm
+
+		Entre el equipo observado encontramos 2 elementos que \textit{a priori} nos resultan extraños. En primer lugar encontramos una fuente de alimentación. Si pensamos en la estructura de la ICT nos daremos cuenta de que la señal es captada por una antena diseñada para la banda de televisión y que esta deberá ser amplificada dada su amplitud tan reducida. Si modeláramos el circuito esta antena sería nuestro generador y la carga equivalente vendría a representar tanto las líneas de distribución como las cargas de los equipos conectados a las mismas.\\
+
+		El hecho de que la señal de entrada a la \textbf{ICT} sea tan pequeña nos lleva a preguntarnos por qué no hemos incluido un amplificador en la tabla anterior. Destacamos pues que este amplificador de cabecera no se encuentra en el registro primario sino más cerca de la antena. Es por ello que no hemos tenido acceso al equipo en cuestión pero tras indagar llegamos a una configuración de equipos de Televés muy común en viviendas de este tipo que podemos ver en la figura \textbf{INSERTAR FIGURA Y REFERENCIA}. En ellas se incluye, como no podría ser de otra manera, un amplificador de cabecera con referencia \textbf{XXX}. Pasamos a hacer un pequeño inciso sobre el cálculo de ganancias y su uso a la hora de obtener las atenuaciones en la infraestructura analizada\\
 
 		\subsection{Frecuencias, ganancias y $decibelios$}
 			Los amplificadores son por definición circuitos activos (contienen elementos activos como transistores) ya que nos permiten manejar ganancias mayores que la unidad. Recordemos la definición de ganancia de un circuito:
@@ -55,86 +71,117 @@
 
 			Esto es, la ganancia es la relación entre las señales de entrada a un circuito y su salida. En este caso $v_i$ sería la señal de entrada al amplificador y $v_o$ la señal a la salida. De lo anterior se sigue que $G$ es un valor adimensional que caracteriza el amplificador utilizado. A pesar de lo aquí comentado debemos señalar que las señales $v_x$ son en general funciones del tiempo ($v(t)$) con lo que llevan asociado un espectro $V(w) = \mathcal{F}\{v(t)\}$ lo que supone una variación de esta ganancia con la frecuencia de las señales que manejos. Esto se resume estableciendo que $G \neq\ cte$ sino que es una función de la frecuencia $G(w)$.\\
 
-			Dada esta variabilidad de la ganania los fabricantes acompañan sus productos de un ancho de banda de trabajo para sus aparatos. Esto es una banda de frecuencias para las que se puede asumir que $G =\ cte$. Estas ganancias son las que nosotros veremos en las hojas del fabricante, en este caso Televés, cuando analicemos la ICT.\\
+			Dada esta variabilidad de la ganancia los fabricantes acompañan sus productos de un ancho de banda de trabajo para sus aparatos. Esto es una banda de frecuencias para las que se puede asumir que $G =\ cte$. Estas ganancias son las que nosotros veremos en las hojas del fabricante, en este caso Televés, cuando analicemos la ICT.\\
 
-			No obstante al acudir a las hojas de caracterísitcas de los equipos nos percataremos de que la unidad de esta ganancia son $dB$, es decir, decibelios. A pesar de toda la confusión que éstas generan (por lo menos a nosotros) las unidades logarítmicas están pensadas para facilitar el manejo de cantidades grandes. Dado que el $Belio$ es una unidad demasiado grande comunmente trabajaremos con el $decibelio$. Al igual que con otras unidades se cumple que $1\ Belio =\ 10\ decibelios$. Con todo, las ganancias que podemos esperar son del tipo:
+			No obstante al acudir a las hojas de características de los equipos nos percataremos de que la unidad de esta ganancia son $dB$, es decir, decibelios. A pesar de toda la confusión que éstas generan (por lo menos a nosotros) las unidades logarítmicas están pensadas para facilitar el manejo de cantidades grandes. Dado que el $Belio$ es una unidad demasiado grande comúnmente trabajaremos con el $decibelio$. Al igual que con otras unidades se cumple que $1\ Belio =\ 10\ decibelios$. Con todo, las ganancias que podemos esperar son del tipo:
 
 			$$G(dB) = 10 \cdot log(\frac{V_o}{V_i})$$
 
-			Nos damos cuenta en un prinipio de que los decibelios son en realidad adimensionales al igual que otras unidades como los $radianes$. Al final estamos comparando dos magnitudes. Además, dadas las propiedades de los logaritmos veremos que en vez de multiplicar por las ganancias podemos sumar tensiones y decibelios siempre que las tensiones también estén expresadas en unidades logarítmicas. Ésto se sigue de la definición misma de la ganancia que hemos visto anteriormente:
+			Nos damos cuenta en un principio de que los decibelios son en realidad adimensionales al igual que otras unidades como los $radianes$. Al final estamos comparando dos magnitudes. Además, dadas las propiedades de los logaritmos veremos que en vez de multiplicar por las ganancias podemos sumar tensiones y decibelios siempre que las tensiones también estén expresadas en unidades logarítmicas. Ésto se sigue de la definición misma de la ganancia que hemos visto anteriormente:
 
 			$$G(dB) = 10 \cdot log(\frac{V_o}{1\ V}) - 10 \cdot log(\frac{V_i}{1\ V}) \rightarrow G(dB) = V_o(dBV) - V_i(dBV)$$
 
-			Así llegamos a que $V_o(dBV) = G(dB) + V_i(dBV)$. Con este pequeño desarrollo explicamos el por qué de los cáculos que iremos haciendo a lo largo del informe. No debemos olvidar que podemos modelar cualquier línea de transmisión como los cables coaxiales de nuestra instalación como si se tratara de una "caja negra" con una relación de transmisión $\frac{V_o}{V_i}$ idéntica a la de este caso. Es por ello que si entendemos las atenuaciones como ganancias negativas el procedimiento para calcular todas las pérdidas de señal a lo largo de la instalación es análogo a éste. Esperamos haber disipado las dudas que podríamos tener sobre la forma de operar con estas undidades que pueden jugarnos una mala pasada si no tenemos cuidado...\\
+			Así llegamos a que $V_o(dBV) = G(dB) + V_i(dBV)$. Con este pequeño desarrollo explicamos el por qué de los cálculos que iremos haciendo a lo largo del informe. No debemos olvidar que podemos modelar cualquier línea de transmisión como los cables coaxiales de nuestra instalación como si se tratara de una "caja negra" con una relación de transmisión $\frac{V_o}{V_i}$ idéntica a la de este caso. Es por ello que si entendemos las atenuaciones como ganancias negativas el procedimiento para calcular todas las pérdidas de señal a lo largo de la instalación es análogo a éste. Esperamos haber disipado las dudas que podríamos tener sobre la forma de operar con estas unidades que pueden jugarnos una mala pasada si no tenemos cuidado...\\
 
 		\subsection{¿Qué son esos equipos?}
-			Si queríamos dejar algo claro es que elementos activos como los amplificadores necesitan un lugar del que sacar la potencia que "inyectan" en su salida. Esto es, necesitamos alimentarlos. Es aquí donde se encuadra la fuente de alimentación que incluíamos en la relación de equipos. Este aparato se encargará de suministrar la alimentación (una tensión contínua) requerida por el amplificador y por la antena. Además tal y como vemos en \textbf{INSERTAR FIGURA Y REFERENCIA} se va a encargar de recibir esta señal amplificada.\\
+			Si queríamos dejar algo claro es que elementos activos como los amplificadores necesitan un lugar del que sacar la potencia que "inyectan" en su salida. Esto es, necesitamos alimentarlos. Es aquí donde se encuadra la fuente de alimentación que incluíamos en la relación de equipos. Este aparato se encargará de suministrar la alimentación (una tensión continua) requerida por el amplificador y por la antena. Además tal y como vemos en \textbf{INSERTAR FIGURA Y REFERENCIA} se va a encargar de recibir esta señal amplificada.\\
 
-			Llegados a este punto nos encontramos con una gran diferencia respecto a las instalaciones en edificios residenciales de varias planata a las que estábamos acostumbrados. Esta fuente de alimentación se encarga de relegar esta señal recibida al \textbf{P}unto de \textbf{A}cceso de \textbf{U}suario que recogíamos antes \textbf{Y} de entreagar la señal directamente a una toma.\\
+			Llegados a este punto nos encontramos con una gran diferencia respecto a las instalaciones en edificios residenciales de varias planta a las que estábamos acostumbrados. Esta fuente de alimentación se encarga de relegar esta señal recibida al \textbf{P}unto de \textbf{A}cceso de \textbf{U}suario que recogíamos antes \textbf{Y} de entregar la señal directamente a una toma.\\
 
 			Si nos adelantamos un poco a los acontecimientos podemos señalar que la \textbf{ICT} estudiada cuenta con $4$ tomas de señal. Si nos fijamos fijamente en el \textbf{PAU/Repartidor} de la figura \textbf{INSERTAR REFERENCIA} nos percatamos de que tiene una relación de entrada salida $1:3$, esto es, lleva la señal de entrada a las $3$ tomas restantes. Es por esto que sabemos que la fuente de alimentación debe entregar directamente a la toma restante.\\
 
 			Como todo equipo emplear una fuente de alimentación no es "gratis" en el sentido de que conllevará una serie de pérdidas que tendremos que contabilizar y que afectarán a todas las tomas del inmueble.\\
 
 		\subsection{Red Telefónica y de Datos}
-			Ya en la introducción
+			Ya en la introducción habíamos señalado que el acceso telefónico y de datos del inmueble estudiado se sustentaba sobre una línea ADSL. Esta conexión se compone de un par trenzado de cobre que une el punto de terminación de red de cada vivienda con el \textbf{DSLAM} del operador. Este \textbf{DSLAM} "traduce" las señales analógicas del cable de cobre a señalización digital que luego se cursará por Internet. Si prestamos atención a la red telefónica veremos que la señal de voz es posteriormente desviada a la red orientada a circuitos que cursa el tráfico de voz. En definitiva aunque el tráfico de voz y datos se curse por los enlaces de cobre debemos saber que éste luego se separa en función de su naturaleza.\\
+
+			Nos podemos preguntar ahora cómo es posible que 2 tráficos totalmente distintos convivan en un solo conductor. La respuesta está en el dominio de la frecuencia. La señal que viaja por el cable sería:
+
+			$$x(t) = x_{voz}(t) + x_{datos}(t)$$
+
+			Si analizamos $X(w) = \mathcal{F}\{x(t)\}$ nos daremos cuenta de que:
+
+			$$X(w) = X_{voz}(w) + X_{datos}(w)$$
+
+			Y lo que es más:
+
+			$$X_{voz}(w) = 0\ \forall \ w \ \notin [0, 14]\ kHz;\ X_{datos} = 0\ \forall w \in [0, 14]\ kHz$$
+
+			En definitiva, los espectros de ambos tipos de señales no se superponen por lo que filtrando alrededor de $14\ kHz$ podemos separar ambas señales sin ningún tipo de problema. Éste filtrado es lo que está haciendo el \textit{splitter} que mencionábamos antes. Así es como conseguimos explicar que tanto el "router" como el teléfono fijo estén conectados en última instancia a la misma toma de pared. El splitter no es más que un filtro paso bajo que extrae la señal de voz de la superposición que existe en el cable.\\
+
+			Al referirnos anteriormente al router lo hemos entrecomillado porque en el aparato que nos da la operadora tenemos tanto un encaminador de capa 3 (un router tradicional) como un módem que adapta los paquetes de información con un formato digital a señales de naturaleza analógica. Además también contará con el filtro paso-alto pertinente.\\
+
+			El punto de terminación de red se encuentra en el registro primario junto al equipo de televisión digital terrestre y marca el límite entre la red del operador y la del abonado. Permite "pinchar" un terminal en ese punto de la línea para comprobar si los errores de red se localizan en la red del abonado o en la externa.\\
+
+			Con todo esperamos haber esclarecido aunque sea ligeramente la anatomía de las redes ADSL.
 
 	\section{Cálculos realizados}
-		Para llevar a cabo los cálculos de las pérdidas producidas en toda la instalación desplegada a lo largo de la vivienda así como su posterior comprobación mediante la herramienta de silumación de la que disponemos hemos debido tener en cuenta una serie de consideraciones. Por una parte, hemos llevado a cabo una aproximación de todas las mediciones y distancias pues en los planos proporcionados con anterioridad por el arquitecto encargado de todo el diseño del tendido para televisión no se explicitaba el recorrido seguido por los cables desde el registro primario hasta cada una de las cuatro tomas de televisión existentes en el inmueble, empleando para ello las distancias y mediciones apreciables a través del pertinente estudio de la planta acotada.\\
+		Para llevar a cabo los cálculos de las pérdidas producidas en toda la instalación desplegada a lo largo de la vivienda así como su posterior comprobación mediante la herramienta de simulación de la que disponemos hemos debido tener en cuenta una serie de consideraciones. Por una parte, hemos llevado a cabo una aproximación de todas las mediciones y distancias pues en los planos proporcionados con anterioridad por el arquitecto encargado de todo el diseño del tendido para televisión no se explicitaba el recorrido seguido por los cables desde el registro primario hasta cada una de las cuatro tomas de televisión existentes en el inmueble, empleando para ello las distancias y mediciones apreciables a través del pertinente estudio de la planta acotada.\\
 
 		De forma similar, la correspondiente verificación con el programa \texttt{Cast60} nos ha presentado ciertas dificultades pues algunos de los componentes presentes en nuestra entramado real no presentan su equivalente en la simulación, siendo esto una gran limitación para corroborar la fidelidad de los cálculos.\\
 
-		Tal y como comentábamos con anterioridad disponíamos de una fuente de alimentación que además de llevar a cabo su cometido requerido se encargaba de establecer una conexión directa con una de las tomas existentes. He aquí donde, debido a las dificultades ya citadas previamente, hemos tenido que realizar una serie de suposiciones, como es el caso de cuál de las 4 terminaciones es alcanzada por la salida de la fuente de alimentación. Así, hemos considerado que se trata de la que se encuentra más próxima al registro priario, es decir, a una menor distancia.\\
+		Tal y como comentábamos con anterioridad disponíamos de una fuente de alimentación que además de llevar a cabo su cometido requerido se encargaba de establecer una conexión directa con una de las tomas existentes. He aquí donde, debido a las dificultades ya citadas previamente, hemos tenido que realizar una serie de suposiciones, como es el caso de cuál de las 4 terminaciones es alcanzada por la salida de la fuente de alimentación. Así, hemos considerado que se trata de la que se encuentra más próxima al registro primario, es decir, a una menor distancia.\\
 
 		Las mediciones obtenidas tras el estudio de la planta acotada necesarias para nuestro análisis son:
 
-		\begin{tabular}{| c | c | c |}
-			\hline
-			\textbf{Distancias} & \textbf{Valor} \textbf{Unidad}\\
-			\hline
-			Antena a amplificador & 1 & m\\
-			\hline
-			Amplificador a fuente de alimentación & 3 & m\\
-			\hline
-			Fuente de alimentación a PAU & 0.5 & m\\
-			\hline
-			Fuente de alimentación a toma 1 & 5,25 & m\\
-			\hline
-			PAU a toma 2 & 6,423 & m\\
-			\hline
-			PAU a toma 3 & 11,752 & m\\
-			\hline
-			PAU a toma 4  & 19,805 & m\\
-			\hline
-		\end{tabular}
+		\vskip 3mm
 
-		Para realizar los cálculos correspondiente hemos echado mano del catálogo de dispositivos de Televes disponible en el aula virtual de la asignatura así como de la propia página web de la mencionada companía para el caso de aquellos elementos no presentes en el referido folleto.\\
+		\begin{center}
+			\begin{tabular}{| c | c | c |}
+				\hline
+				\textbf{Distancias} & \textbf{Valor} & \textbf{Unidad}\\
+				\hline
+				Antena a amplificador & 1 & m\\
+				\hline
+				Amplificador a fuente de alimentación & 3 & m\\
+				\hline
+				Fuente de alimentación a PAU & 0.5 & m\\
+				\hline
+				Fuente de alimentación a toma 1 & 5,25 & m\\
+				\hline
+				PAU a toma 2 & 6,423 & m\\
+				\hline
+				PAU a toma 3 & 11,752 & m\\
+				\hline
+				PAU a toma 4  & 19,805 & m\\
+				\hline
+			\end{tabular}
+		\end{center}
+
+		\vskip 3mm
+
+		Para realizar los cálculos correspondiente hemos echado mano del catálogo de dispositivos de Televés disponible en el aula virtual de la asignatura así como de la propia página web de la mencionada compañía para el caso de aquellos elementos no presentes en el referido folleto.\\
 
 		De este modo, la información de nuestro interés obtenida es:
 
-		\begin{tabular}{| c | c | c |}
-			\hline
-			\textbf{Elemento} & \textbf{Valor} \textbf{Unidad}\\
-			\hline
-			Pérdidas de inserción fuente de alimentación (5495) & 4 & dB\\
-			\hline
-			Pérdidas de inserción PAU (5436) & 7 & dB\\
-			\hline
-			Pérdidas cable (2138) & 0.18 & dB/m\\
-			\hline
-			Pérdidas cable (2141) & 0.15 & dB/m\\
-			\hline
-			Pérdidas derivación toma (5226) & 0.6 & dB\\
-			\hline
-			Ganancia amplificador (5356) & 40 (+/-) [0 - 15] & dB\\
-			\hline
-		\end{tabular}
+		\vskip 3mm
+		\begin{center}
+			\begin{tabular}{| c | c | c |}
+				\hline
+				\textbf{Elemento} & \textbf{Valor} & \textbf{Unidad}\\
+				\hline
+				Pérdidas de inserción fuente de alimentación (5495) & 4 & dB\\
+				\hline
+				Pérdidas de inserción PAU (5436) & 7 & dB\\
+				\hline
+				Pérdidas cable (2138) & 0.18 & dB/m\\
+				\hline
+				Pérdidas cable (2141) & 0.15 & dB/m\\
+				\hline
+				Pérdidas derivación toma (5226) & 0.6 & dB\\
+				\hline
+				Ganancia amplificador (5356) & 40 (+/-) [0 - 15] & dB\\
+				\hline
+			\end{tabular}
+		\end{center}
+
+		\vskip 3mm
 
 		Tras haber realizado los pertinentes cálculos en cuanto a las pérdidas de toda la instalación, sumando las presentadas por los cables, los dispositivos intermedios como la fuente de alimentación y el punto de acceso de usuario y las restantes tomas de televisión, hemos apreciado una considerable diferencia entre aquella terminación que estable una unión directa con la fuente de alimentación y las que deben pasar previamente por la PAU.\\
 
 		Para evidenciar más esta variación presentamos los cálculos para el primero de los casos y uno de los equivalentes en el segundo, teniendo en cuenta las mediciones y parámetros presentados con anterioridad:
 
-		$$P(dB)_{toma1} = 4*0.18 + 4 + 0 + 0 + 5.25*0.15 + 0.6 = 6.1075$$
-		$$P(dB)_{toma2} = 4*0.18 + 4 + 0.5*0.15 + 7 + 6.423*0.15 + 0.6 = 13.35845$$
+		$$P(dB)_{toma1} = 4 \cdot 0.18 + 4 + 0 + 0 + 5.25 \cdot 0.15 + 0.6 = 6.1075$$
+		$$P(dB)_{toma2} = 4 \cdot 0.18 + 4 + 0.5*0.15 + 7 + 6.423 \cdot 0.15 + 0.6 = 13.35845$$
 
 \end{document}
