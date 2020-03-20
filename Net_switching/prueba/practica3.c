@@ -66,6 +66,8 @@ void *fhilo(void *dat)
   double fi = 0;
   double a = 0;
 
+  struct datos d = *((struct datos *) dat);
+
   struct datos *d = (struct datos *)dat;
 
   for (i = 0; i < d->div_hil; i++)
