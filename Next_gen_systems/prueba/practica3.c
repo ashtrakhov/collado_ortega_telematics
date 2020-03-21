@@ -64,14 +64,21 @@ int main(int argc, char* argv[])
     }
   }*/
 
+  double disp_divs = 0;
+
   for (i = 0; i < num_hil; i++)
   {
-    dat[i].tam_div = 1 / (double)num_div;
+    dat[i].tam_div = 1 / (double) num_div;
     
-    dat[i].ini = i * dat[i].tam_div * dat[i].div_hil;
+    dat[i].ini = disp_divs;
+
+    disp_divs += dat[i].tam_div * dat[i].div_hil;
     
     pthread_create(&h[i], NULL, fhilo, &dat[i]);
   }
+
+  for (int i = 0; i < num_hil; i++)
+    printf("Data for th %d:\t%d\t%1.20lf\t%lf\n", i, dat[i].div_hil, dat[i].ini, dat[i].tam_div);
 
   for (i = 0; i < num_hil; i++)
   {
