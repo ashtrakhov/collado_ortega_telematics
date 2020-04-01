@@ -127,16 +127,16 @@ for ind = 1:numDias
     DiaAnalisis = startTime{ind};
     DiaAnalisis = {DiaAnalisis(1:(end-8))};
 
-
-    instantes = datetime(DatosTiempo,'ConvertFrom','datenum');
+    % instantes = datetime(DatosTiempo,'ConvertFrom','datenum');
     num_mediashoras = floor(length(DatosOeste)/48);
     instantes30min = downsample(DatosTiempo, num_mediashoras);
     for ind_30 = 1:48
-        DatosOeste_30min(ind_30) = mean(DatosOeste(1+num_mediashoras*(ind_30-1):num_mediashoras*ind_30));
+        DatosOeste_30min(ind_30) = mean(DatosOeste(1+num_mediashoras*(ind_30-1):num_mediashoras*ind_30)); %#ok<*SAGROW>
         DatosEste_30min(ind_30) = mean(DatosEste(1+num_mediashoras*(ind_30-1):num_mediashoras*ind_30));
     end
     
     instantes30min(1) = [];
+    % instantes30min_conv = datetime(instantes30min, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
     instantes30min_conv=datetime(instantes30min,'ConvertFrom','datenum');
     
     [picosOeste,posicionOeste] = findpeaks(DatosOeste_30min, 'Threshold',0.3, 'MinPeakHeight', 5);
