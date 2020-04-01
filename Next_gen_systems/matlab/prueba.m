@@ -87,39 +87,39 @@ ylabel('Densidad de trafico medio por dia')
 title('Densidad de trafico medio por dia en la zona Este. 2018')
 datetick
 
-%startTime{1} = 'March 28, 2018 00:00:00';% weekend day
-%stopTime{1} = 'March 28, 2018 23:59:59';
-%startTime{2} = 'March 29, 2018 00:00:00';% weekend day
-%stopTime{2} = 'March 29, 2018 23:59:59';
-%startTime{3} = 'March 30, 2018 00:00:00';% weekend day
-%stopTime{3} = 'March 30, 2018 23:59:59';
-%startTime{4} = 'March 31, 2018 00:00:00';% weekend day
-%stopTime{4} = 'March 31, 2018 23:59:59';
-%startTime{5} = 'April 01, 2018 00:00:00';% weekend day
-%stopTime{5} = 'April 01, 2018 23:59:59';
-%startTime{6} = 'April 02, 2018 00:00:00';% weekend day
-%stopTime{6} = 'April 02, 2018 23:59:59';
+startTime{1} = 'March 28, 2018 00:00:00';% weekend day
+stopTime{1} = 'March 28, 2018 23:59:59';
+startTime{2} = 'March 29, 2018 00:00:00';% weekend day
+stopTime{2} = 'March 29, 2018 23:59:59';
+startTime{3} = 'March 30, 2018 00:00:00';% weekend day
+stopTime{3} = 'March 30, 2018 23:59:59';
+startTime{4} = 'March 31, 2018 00:00:00';% weekend day
+stopTime{4} = 'March 31, 2018 23:59:59';
+startTime{5} = 'April 01, 2018 00:00:00';% weekend day
+stopTime{5} = 'April 01, 2018 23:59:59';
+startTime{6} = 'April 02, 2018 00:00:00';% weekend day
+stopTime{6} = 'April 02, 2018 23:59:59';
 
-startTime{1} = '2018-03-28 00:00:00.000';% weekend day
-stopTime{1} = '2018-03-28 23:59:59.999';
-startTime{2} = '2018-03-28 00:00:00.000';% weekend day
-stopTime{2} = '2018-03-28 23:59:59.999';
-startTime{3} = '2018-03-28 00:00:00.000';% weekend day
-stopTime{3} = '2018-03-28 23:59:59.999';
-startTime{4} = '2018-03-28 00:00:00.000';% weekend day
-stopTime{4} = '2018-03-28 23:59:59.999';
-startTime{5} = '2018-04-01 00:00:00.000';% weekend day
-stopTime{5} = '2018-04-01 23:59:59.999';
-startTime{6} = '2018-04-02 00:00:00.000';% weekend day
-stopTime{6} = '2018-04-02 23:59:59.999';
+%startTime{1} = '2018-03-28 00:00:00.000';% weekend day
+%stopTime{1} = '2018-03-28 23:59:59.999';
+%startTime{2} = '2018-03-28 00:00:00.000';% weekend day
+%stopTime{2} = '2018-03-28 23:59:59.999';
+%startTime{3} = '2018-03-28 00:00:00.000';% weekend day
+%stopTime{3} = '2018-03-28 23:59:59.999';
+%startTime{4} = '2018-03-28 00:00:00.000';% weekend day
+%stopTime{4} = '2018-03-28 23:59:59.999';
+%startTime{5} = '2018-04-01 00:00:00.000';% weekend day
+%stopTime{5} = '2018-04-01 23:59:59.999';
+%startTime{6} = '2018-04-02 00:00:00.000';% weekend day
+%stopTime{6} = '2018-04-02 23:59:59.999';
 
 numDias = length(startTime);
 
 for ind = 1:numDias
-    %DiaInicio = datetime(startTime{ind}, 'InputFormat', 'MMMM d, yyyy HH:mm:ss ');
-    %DiaFinal = datetime(stopTime{ind}, 'InputFormat', 'MMMM d, yyyy HH:mm:ss ');
-    DiaInicio = datetime(startTime{ind}, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
-    DiaFinal = datetime(stopTime{ind}, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
+    DiaInicio = datetime(startTime{ind}, 'InputFormat', 'MMMM d, yyyy HH:mm:ss ');
+    DiaFinal = datetime(stopTime{ind}, 'InputFormat', 'MMMM d, yyyy HH:mm:ss ');
+    %DiaInicio = datetime(startTime{ind}, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
+    %DiaFinal = datetime(stopTime{ind}, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
     VectorDias = [DiaInicio, DiaFinal];
     [DatosDia, DatosTiempo] = thingSpeakRead(chID, 'DateRange', VectorDias);
     DatosOeste = DatosDia(:,1);
@@ -127,7 +127,8 @@ for ind = 1:numDias
     DiaAnalisis = startTime{ind};
     DiaAnalisis = {DiaAnalisis(1:(end-8))};
 
-    % instantes = datetime(DatosTiempo,'ConvertFrom','datenum');
+    %instantes = datetime(DatosTiempo,'ConvertFrom','datenum');
+    instantes = datetime(DatosTiempo,'InputFormat','yyyy-MM-dd HH:mm:ss.SSS');
     num_mediashoras = floor(length(DatosOeste)/48);
     instantes30min = downsample(DatosTiempo, num_mediashoras);
     for ind_30 = 1:48
@@ -136,8 +137,8 @@ for ind = 1:numDias
     end
     
     instantes30min(1) = [];
-    % instantes30min_conv = datetime(instantes30min, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
-    instantes30min_conv=datetime(instantes30min,'ConvertFrom','datenum');
+    instantes30min_conv = datetime(instantes30min, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
+    %instantes30min_conv=datetime(instantes30min,'ConvertFrom','datenum');
     
     [picosOeste,posicionOeste] = findpeaks(DatosOeste_30min, 'Threshold',0.3, 'MinPeakHeight', 5);
     [picosEste,posicionEste] = findpeaks(DatosEste_30min, 'Threshold',0.3, 'MinPeakHeight', 5);
