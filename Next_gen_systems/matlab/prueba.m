@@ -290,9 +290,6 @@ title(sprintf("Average traffic density per day in the East zone - %d", limit_day
 % En nuestro intervalo de tiempo (2018) el 31 de marzo y el 1 de abril fueron fin de semana
 % Este dato cobra importancia al interpretar los datos
 
-start_time = {}
-stop_time = {}
-
 % En este bucle generaremos de manera dinámica las cadenas que emplear para hacer las consultas
 % a la base de datos de ThingSpeak
 
@@ -310,7 +307,9 @@ for i = 1:num_days
     % Es por ello que en sprintf() empleamos los especificadores de formato %04d y %02d
     % respectivamente
 
-    % Aquí introducimos un nuevo elemento en cada matriz
+    % Aquí introducimos un nuevo elemento en cada matriz. Al introducir el primer elemento la matriz
+    % se creará automáticamente
+
     start_time{i} = sprintf('%04d-%02d-%02d 00:00:00.000', curr_year, curr_month, curr_day);
     stop_time{i}  = sprintf('%04d-%02d-%02d 23:59:59.999', curr_year, curr_month, curr_day);
 
@@ -430,7 +429,7 @@ for i = 1:num_days
     % Generamos una gráfica para cada día. Como el procedimiento es análogo a las figuras anteriores
     % solo señalamos los aspectos nuevos
 
-    figure('Name', sprintf("Traffic intensity on %s", data_day), 'NumberTitle', 'off');
+    figure('Name', sprintf("Traffic intensity on %s", data_day{1}), 'NumberTitle', 'off');
     subplot(1, 2, 1);
 
     % Mostramos los máximos locales al no especificar variables que recojan el resultado devuelto
