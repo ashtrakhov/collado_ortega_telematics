@@ -85,20 +85,26 @@ void manejador(int n, siginfo_t *info, void *context)
   {
     printf("Prueba Ctrl+C\n");
     
-    signal(SIGINT, SIG_DFL);
+    //signal(SIGINT, SIG_DFL);
+
+    exit(0);
   }
 
   if (n == SIGALRM)
   {
     printf("Prueba alarma\n");
     
-    signal(SIGALRM, SIG_DFL);
+    //signal(SIGALRM, SIG_DFL);
+    
+    exit(0);
   }
 
   if (n == SIGUSR1)
   {
     printf("Prueba externa\n");
     
-    signal(SIGUSR1, SIG_DFL);
+    //signal(SIGUSR1, SIG_DFL);
+    
+    exit(0);
   }
 }
