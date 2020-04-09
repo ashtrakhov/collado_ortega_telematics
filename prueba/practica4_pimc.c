@@ -104,7 +104,5 @@ void manejador(int n, siginfo_t *info, void *context)
     printf("Prueba externa\n");
     
     //signal(SIGUSR1, SIG_DFL);
-    
-    exit(0);
   }
 }
