@@ -5,18 +5,23 @@
 #include <signal.h>
 #include <unistd.h>
 
+int i = 0;
+int num_pun = 0;
+int c = 0;
+double res = 0;
+
 void manejador(int n, siginfo_t *info, void *context);
 
 int main(int argc, char* argv[])
 {
-  int i = 0;
-  int num_pun = 0;
+  //int i = 0;
+  //int num_pun = 0;
   int temp = 0;
-  int c = 0;
+  //int c = 0;
   double x = 0;
   double y = 0;
   double dis = 0;
-  double res = 0;
+  //double res = 0;
   struct sigaction s;
 
   if (argc != 3)
@@ -51,7 +56,7 @@ int main(int argc, char* argv[])
 
   alarm(temp);
 
-  printf("PID: %d\n", getpid());
+  printf("Proceso lanzado (PID=%d)\n", getpid());
 
   srand48(time(NULL));
 
@@ -73,35 +78,61 @@ int main(int argc, char* argv[])
 
   res *= 4;
 
-  printf("Valor calculado: %.20lf\n", res);
+  printf("Finalizado después de %d iteraciones.\n", i);
+
+  printf("Valor calculado: %.6lf\n", res);
 
   return 0;
-void manejador(int n, siginfo_t *info, void *context);
 }
 
 void manejador(int n, siginfo_t *info, void *context)
 {
+  if (n == SIGALRM)
+  {
+    //printf("Prueba alarma\n");
+    
+    res = c / (double)num_pun;
+    
+    res *= 4;
+    
+    printf("Finalizado por timeout tras %d iteraciones.\n", i);
+    
+    printf("Valor calculado: %.6lf\n", res);
+    
+    //signal(SIGALRM, SIG_DFL);
+    
+    exit(0);
+  }
+  
   if (n == SIGINT)
   {
-    printf("Prueba Ctrl+C\n");
+    //printf("Prueba Ctrl+C\n");
+    
+    res = c / (double)num_pun;
+    
+    res *= 4;
+    
+    printf("Finalizado por interrupción.\n");
+    
+    printf("Valor calculado: %.6lf\n", res);
     
     //signal(SIGINT, SIG_DFL);
 
     exit(0);
   }
 
-  if (n == SIGALRM)
-  {
-    printf("Prueba alarma\n");
-    
-    //signal(SIGALRM, SIG_DFL);
-    
-    exit(0);
-  }
 
   if (n == SIGUSR1)
   {
-    printf("Prueba externa\n");
+    //printf("Prueba externa\n");
+
+    res = c / (double)num_pun;
+
+    res *= 4;
+
+    printf("Resultado parcial solicitado (SIGUSR1 de %d)\n", info->si_pid);
+
+    printf("Valor calculado hasta ahora: %.6lf\n", res);
     
     //signal(SIGUSR1, SIG_DFL);
   }
