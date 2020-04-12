@@ -22,6 +22,7 @@ def main():
 
                 for elem in lista[1:]:
                     elem.close()
+                lista = [lista[0]]
             else:
                 for elem in para_leer:
                     if elem == sock_ser:
@@ -35,7 +36,6 @@ def main():
                             lista.remove(elem)
                         else:
                             s = info.split("\r\n")
-
                             if s[0].split(" ")[0] == "GET":
                                 if s[0].split(" ")[1] == "/":
                                     error = False
@@ -58,13 +58,20 @@ def main():
 
                                 for campo in s[1:]:
                                     if campo.split(" ", 1)[0] == "Connection:":
-                                        conexion = campo.split(" ", 1)[1]
+                                        # conexion = campo.split(" ", 1)[1]
+                                        conexion = 'close'
 
                                 if error == False:
                                     archivo = open(nombre, modo)
                                     datos = archivo.read()
 
-                                elem.sendall((("HTTP/1.1 {}\r\nDate: {}\r\nServer: Apache\r\nContent-type: {}\r\nContent-leght: {}\r\nConnection: {}\r\n\r\n{}").format(codigo, str(datetime.date.today()), tipo, len(datos), conexion, datos)).encode())
+                                elem.sendall((("HTTP/1.1 {}\r\nDate: {}\r\nServer: Apache\r\nContent-type: {}\r\nContent-leght: {}\r\nConnection: {}\r\n\r\n{}").format(codigo, str(datetime.date.today()), tipo, len(datos), conexion, '')).encode())
+
+                                if nombre == "mundo.jpg":
+                                    elem.sendall(datos)
+
+                                elif nombre == "web.html":
+                                    elem.sendall(datos.encode())
 
                                 archivo.close()
 
