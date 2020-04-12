@@ -15,7 +15,7 @@ def main():
 
     try:
         while True:
-            para_leer, para_escribir, error = select.select(lista, [], [], 300)
+            para_leer, para_escribir, error = select.select(lista, [], [], 5)
 
             if len(para_leer) == 0:
                 print("Servidor web inactivo")
@@ -29,7 +29,7 @@ def main():
                         sock_cli, sock_cliaddr = sock_ser.accept()
                         lista.append(sock_cli)
                     else:
-                        info = elem.recv(4096).decode()
+                        info = elem.recv(8148).decode()
 
                         if info == "":
                             elem.close()
@@ -59,18 +59,22 @@ def main():
                                 for campo in s[1:]:
                                     if campo.split(" ", 1)[0] == "Connection:":
                                         # conexion = campo.split(" ", 1)[1]
-                                        conexion = 'close'
+                                        conexion = 'keep-alive'
 
                                 if error == False:
                                     archivo = open(nombre, modo)
                                     datos = archivo.read()
 
-                                elem.sendall((("HTTP/1.1 {}\r\nDate: {}\r\nServer: Apache\r\nContent-type: {}\r\nContent-leght: {}\r\nConnection: {}\r\n\r\n{}").format(codigo, str(datetime.date.today()), tipo, len(datos), conexion, '')).encode())
+                                print("Sending headers!")
 
-                                if nombre == "mundo.jpg":
+                                elem.sendall("HTTP/1.1 {}\r\nDate: {}\r\nServer: Apache\r\nContent-type: {}\r\nContent-length: {}\r\nConnection: {}\r\n\r\n{}".format(codigo, str(datetime.date.today()), tipo, len(datos), conexion, '').encode())
+
+                                if '.jpg' in nombre:
+                                    print("Sending IMG!")
                                     elem.sendall(datos)
 
                                 elif nombre == "web.html":
+                                    print("Sending Site!")
                                     elem.sendall(datos.encode())
 
                                 archivo.close()
