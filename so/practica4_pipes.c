@@ -54,19 +54,14 @@ int main(int argc, char* argv[])
 
     exit(0);
   }
-  else
+
+  close(pipefd1[1]);
+
+  pipe(pipefd2);
+
+  for (i = 0; i < num_wor; i++)
   {
-    close(pipefd1[1]);
-    
-    pipe(pipefd2);
-
-    for (i = 0; i < num_wor; i++)
-    {
-      pid = fork();
-    }
-
-    if (pid == 0)
-    {
+    if ((pid = fork()) == 0) {
       close(pipefd2[0]);
 
       worker(pipefd1[0], pipefd2[1]);
@@ -77,29 +72,25 @@ int main(int argc, char* argv[])
 
       exit(0);
     }
-    else
+  }
+
+  close(pipefd1[0]);
+
+  close(pipefd2[1]);
+
+  if ((pid = fork()) == 0)
+  {
+    gatherer(pipefd2[0]);
+
+    close(pipefd2[0]);
+
+    exit(0);
+  }
+    close(pipefd2[0]);
+
+    for (i = 0; i < (num_wor + 2); i++)
     {
-      close(pipefd1[0]);
-
-      close(pipefd2[1]);
-
-      if ((pid = fork()) == 0)
-      {
-        gatherer(pipefd2[0]);
-
-        close(pipefd2[0]);
-
-        exit(0);
-      }
-      else
-      {
-        close(pipefd2[0]);
-
-        for (i = 0; i < (num_wor + 2); i++)
-        {
-          wait(NULL);
-        }
-      }
+      wait(NULL);
     }
     
     /*for (i = 0; i < num_wor; i++)
