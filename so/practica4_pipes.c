@@ -50,6 +50,8 @@ int main(int argc, char* argv[])
 
     dispatcher(pipefd1[1], num_paq, num_div);
 
+    close(pipefd1[1]);
+
     exit(0);
   }
   else
@@ -69,6 +71,10 @@ int main(int argc, char* argv[])
 
       worker(pipefd1[0], pipefd2[1]);
 
+      close(pipefd1[0]);
+
+      close(pipefd2[1]);
+
       exit(0);
     }
     else
@@ -80,6 +86,8 @@ int main(int argc, char* argv[])
       if ((pid = fork()) == 0)
       {
         gatherer(pipefd2[0]);
+
+        close(pipefd2[0]);
 
         exit(0);
       }
