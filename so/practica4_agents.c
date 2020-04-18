@@ -48,6 +48,8 @@ void worker(int workpipe, int resultpipe)
   {
     //printf(" Ini = %lf\n", p.ini);
 
+    a = 0;
+
     for (i = 0; i < p.div_paq; i++)
     {
       //printf(" Ini = %lf\n", (p.ini + i * p.tam_div));
