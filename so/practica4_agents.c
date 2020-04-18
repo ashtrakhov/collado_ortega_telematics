@@ -42,7 +42,7 @@ void worker(int workpipe, int resultpipe)
   double a = 0;
   struct datos p;
 
-  printf("Worker");
+  //printf("Worker");
   
   while (read(workpipe, &p, sizeof(struct datos)) > 0)
   {
