@@ -141,23 +141,26 @@ grid on
 
 % datos entre las 0:00 del 4 de junio y las 0:00 del 5 de junio (día 4 de junio)
 [d,t,ci] = thingSpeakRead(12397,'DateRange',[datetime('Jun 4, 2014'),datetime('Jun 5, 2014')]);
-lluvia = d(:,5); % lluvia registrada por el sensor en pulgadas por minuto
+tempF = d(:,4); % campo 4 es temperatura en grados F
+tempC = (5/9)*(tempF-32); % conversión a Celsius
 
-num_muestras = length(lluvia) - 1;
+num_muestras = length(tempC) - 1;
 
 acum = [];
 
 for muestra = 1:num_muestras
-    dif = lluvia(muestra + 1) - lluvia(muestra);
+    dif = tempC(muestra + 1) - tempC(muestra);
     
     acum = [acum; dif];
 end
 
+t(length(tempC)) = [];
+
 % gráfico lluvia y presión
 figure(6)
 plot(t, acum,'-r');
-xlabel('Día y Hora')
-ylabel('Lluvia (pulgadas /por hora)')
+xlabel('Hora')
+ylabel('Diferencia temperatura')
 grid on
-datetick('x','dd-mmm HH:MM','keeplimits','keepticks')
-title('Lluvia el 4 y 5 de junio')
+datetick
+title('Lluvia el 4 de junio')
