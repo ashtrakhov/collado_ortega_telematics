@@ -143,22 +143,24 @@ grid on
 [d,t,ci] = thingSpeakRead(12397,'DateRange',[datetime('Jun 4, 2014'),datetime('Jun 5, 2014')]);
 tempF = d(:,4); % campo 4 es temperatura en grados F
 tempC = (5/9)*(tempF-32); % conversión a Celsius
+tempCHora = downsample(tempC,60);
+tHora = downsample(t,60);
 
-num_muestras = length(tempC) - 1;
+num_muestras = length(tempCHora) - 1;
 
 acum = [];
 
 for muestra = 1:num_muestras
-    dif = tempC(muestra + 1) - tempC(muestra);
+    dif = tempCHora(muestra + 1) - tempCHora(muestra);
     
     acum = [acum; dif];
 end
 
-t(length(tempC)) = [];
+tHora(length(tempCHora)) = [];
 
 % gráfico lluvia y presión
 figure(6)
-plot(t, acum,'-r');
+plot(tHora, acum,'-r');
 xlabel('Hora')
 ylabel('Diferencia temperatura')
 grid on
