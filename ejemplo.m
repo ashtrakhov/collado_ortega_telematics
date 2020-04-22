@@ -157,7 +157,7 @@ for muestra = 1:num_muestras
 end
 
 tHora(length(tempCHora)) = [];
-a
+
 figure(6)
 plot(tHora, acum,'-r');
 xlabel('Hora')
