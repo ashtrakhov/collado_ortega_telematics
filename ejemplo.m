@@ -140,7 +140,7 @@ title('Datos originales')
 grid on
 
 % datos entre las 0:00 del 4 de junio y las 0:00 del 5 de junio (día 4 de junio)
-[d,t,ci] = thingSpeakRead(12397,'DateRange',[datetime('Jun 4, 2014'),datetime('Jun 5, 2014')]);
+[d,t,ci] = thingSpeakRead(12397,'DateRange',[datetime('Jan 4, 2015'),datetime('Jan 5, 2015')]);
 tempF = d(:,4); % campo 4 es temperatura en grados F
 tempC = (5/9)*(tempF-32); % conversión a Celsius
 tempCHora = downsample(tempC,60);
@@ -165,4 +165,4 @@ xlabel('Hora')
 ylabel('Diferencia temperatura')
 grid on
 datetick
-title('Lluvia el 4 de junio')
+title('Diferencia de temperatura 4 de enero de 2015')
