@@ -141,7 +141,7 @@ Así, podemos intentar comprobar el número de contraseñas del diccionario `roc
 
 Con este ataque probamos todas las contraseñas del diccionario. Por comodidad podemos ejecutar `head rockyou.txt` para consultar las primeras líneas de nuestra *wordlist*. Con ello vemos que una de las contraseñas probadas ha sido, por ejemplo `princess`. Podemos ver también por ejemplo como se ha la contraseña `harrypotter` y ésta está en el archivo diccionario, cosa que se puede comprobar con `cat rockyou.txt | grep 'harrypotter'`.
 
-Solo nos queda comentar el número de contraseñas encontradas. Procediendo de la misma forma que para encontrar el esfuerzo máximo veremos que el número de líneas del archivo `dict_hits.txt` es `156897`, esto es, hemos recuperado `156897` contraseñas en tan solo `27,372 s`. Esto supone alrededor de un `4,5 %` del toal de contraseñas del archivo auditado.
+Solo nos queda comentar el número de contraseñas encontradas. Procediendo de la misma forma que para encontrar el esfuerzo máximo veremos que el número de líneas del archivo `dict_hits.txt` es `156897`, esto es, hemos recuperado `156897` contraseñas en tan solo (revisar) `27,372 s`. Esto supone alrededor de un `4,5 %` del toal de contraseñas del archivo auditado.
 
 ### Primer ataque con reglas: cambiando mayúsculas por minúsculas y viceversa.
 Ahora vamos a emplear el diccionario `john.txt` como base dado que al ser más pequeño que `rockyou.txt` resulta más manejable mientras que los conceptos siguen siendo idénticos.
