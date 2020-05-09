@@ -1,12 +1,12 @@
 # Datos técnicos
-Tal y como se explica en el guión de la práctica debemos escoger un fichero con *hashes* para analizar así como una herramienta de auditoría y un diccionario del que partir. En nuestro caso hemos optado por analizar los arcvhivos `raw-md5.hashes4.txt` y `raw-md5.hashes5.txt`. Asimismo y tal y como se recomienda hemos trabajado con *hashcat* para intentar recuperar las contraseñas a partir de los *hashes* contenidos en dichos archivos. Finalmente señalamos que hemos empleado dos diccionarios base para nuestras pruebas. En primer luegar hemos empleado el archiconocido `rockyou.txt` así como el diccionario por defecto de la herramienta *John the Ripper* que, en nuestro caso, denominaremos `john.txt`. Este programa es muy similar a *hashcat* y tal y como aparece en {1} es venerado por su gran calidad. Destacamos asimismo que, tal y como comentaremos al analizar los distitntos ataques en profundidad, las contraseñas contenidas en estos diccionarios no son las únicas que comprobaremos pues asistiteremos a tipos de ataques que nos permiten recombinar el diccionario original para aumentar las candidatas a probar.
+Tal y como se explica en el guión de la práctica debemos escoger un fichero con *hashes* para analizar así como una herramienta de auditoría y un diccionario del que partir. En nuestro caso hemos optado por analizar los archivos `raw-md5.hashes4.txt` y `raw-md5.hashes5.txt`. Asimismo y tal y como se recomienda hemos trabajado con *hashcat* para intentar recuperar las contraseñas a partir de los *hashes* contenidos en dichos archivos. Finalmente señalamos que hemos empleado dos diccionarios base para nuestras pruebas. En primer lugar hemos empleado el archiconocido `rockyou.txt` así como el diccionario por defecto de la herramienta *John the Ripper* que, en nuestro caso, denominaremos `john.txt`. Este programa es muy similar a *hashcat* y tal y como aparece en {1} es venerado por su gran calidad. Destacamos asimismo que, tal y como comentaremos al analizar los distintos ataques en profundidad, las contraseñas contenidas en estos diccionarios no son las únicas que comprobaremos pues asistiremos a tipos de ataques que nos permiten recombinar el diccionario original para aumentar las candidatas a probar.
 
 # Problemas con la instalación
 Antes de empezar a emplear *hashcat* para trabajar nos topamos con un ligero problema. Al invocar el programa para cerciorarnos de que todo funcionaba correctamente con `hashcat --benchmark` vimos cómo el propio *hashcat* nos informaba de no haber encontrado dispositivos compatibles para lleavar a cabo su trabajo. Como nuestra intención era usar simplemente la CPU para calcular los hashes necesarios y la versión instalada se correspondía con este fin nos pareció realmente extraño estar en esta situación. Tomando el error impreso como punto de partida nos dispusimos a encontrar una solución.
 
 Tras navegar durante un rato al final descubrimos que nuestro equipo no tenía el *OpenCL Runtime* instalado para procesadores *Intel Core*. Tal y como se aprecia en {2}, este *framework* nos ofrece una *API* (**A**pplication **P**rogramming **I**nterface) para ejecutar programas en máquinas heterogéneas. Al tener nuestro sistema tan solo una implementación libre en vez de la oficial *hashcat* nos informaba de que la velocidad podía verse muy afectada.
 
-Tras navegar de nuevo por la red encotramos y descargamos el driver de {3}. Para que el proceso de instalación tuviera éxito tuvimos que instalar un par de librarías que, según el instalador, no estaban presentes. Lo pudimos lograr sin problemas con:
+Tras navegar de nuevo por la red encontramos y descargamos el driver de {3}. Para que el proceso de instalación tuviera éxito tuvimos que instalar un par de librarías que, según el instalador, no estaban presentes. Lo pudimos lograr sin problemas con:
 
 ```bash
 sudo apt update && sudo apt install libtinfo5 lsb-core
@@ -30,7 +30,7 @@ Dejando de lado lo anterior también señalamos que hemos aprendido cómo audita
 
 También hemos interiorizado la diferencia clara que hay entre unos ataques y otros. Comprender este hecho es la clave para poder llevar a cabo estas auditorías en el menor tiempo posible manteniendo la mayor eficacia.
 
-Finalmente señalamos que, motivados por la curiosidad, leímos acerca de métodos más avanzados de auditoría como pueden ser las *Rainbow Tables*. Nos pareció tremendamente interesante obervar las estrategias para diseñar una una estructura de datos que minimizara estos tiempos de búsqueda de contraseñas.
+Finalmente señalamos que, motivados por la curiosidad, leímos acerca de métodos más avanzados de auditoría como pueden ser las *Rainbow Tables*. Nos pareció tremendamente interesante observar las estrategias para diseñar una estructura de datos que minimizara estos tiempos de búsqueda de contraseñas.
 
 Con todo pasamos a comentar los aspectos más relevantes de cada tipo de ataque:
 
@@ -48,7 +48,7 @@ Llevar a cabo este tipo de ataque resulta sencillo empleando *hashcat*. Tras con
 
 2. Tipo de ataque a realizar. En nuestro caso es un ataque de diccionario lo que supone de nuevo el tipo `0` pero en esta ocasión para la opción `-a`.
 
-3. Archivo a auditar. En nuestro caso será `raw-md5.hashes.txt`.
+3. Archivo a auditar. En nuestro caso será `raw-md5.hashes5.txt`.
 
 4. Diccionario del que obtener las contraseñas candidatas. Nosotros emplearemos `rockyou.txt`.
 
@@ -135,18 +135,18 @@ user    0m32.978s
 sys     0m8.800s
 ```
 
-Queremos señalar que precedemos la llama a *hashcat* con el comando `time` para poder obtener los tiempos reales de ejecución. En este caso es de `22,372 s`. Asimismo y dado que estamos redireccionando la salida de hashes encontrados a un archivo solo vamos a incluir esta salida completa un vez para poder aprovechar al máximo las hojas de las que disponemos.
+Queremos señalar que precedemos la llamada a *hashcat* con el comando `time` para poder obtener los tiempos reales de ejecución. En este caso es de `22,372 s`. Asimismo y dado que estamos redireccionando la salida de hashes encontrados a un archivo solo vamos a incluir esta salida completa un vez para poder aprovechar al máximo las hojas de las que disponemos.
 
 Así, podemos intentar comprobar el número de contraseñas del diccionario `rockyou.txt` con `wc -l rockyou.txt`. Con ello vemos que, en teoría, hemos probado `14344391` contraseñas o lo que es lo mismo, el esfuerzo máximo del ataque habría sido de `14344391` hashes. Esta correspondencia directa entre el número de contraseñas y el esfuerzo máximo se debe a que, tal y como comentábamos, no estamos alterando el diccionario de ninguna manera. No obstante, la salida del program nos indica que se han probado `14344238` contraseñas, `7` menos de las que esperabamos probar. Así, consultando el archivo con `tail -n 20 rockyou.txt` veremos que éste incluye algunas líneas en blanco que *hashcat* no estará comprobando como contraseña o eso creemos. En definitiva, el valor correcto es el que se indica en la salida del programa. Además, la correspondencia número de contraseñas-esfuerzo máximo se mantiene intacta.
 
-Con este ataque probamos todas las contraseñas del diccionario. Por comodidad podemos ejecutar `head rockyou.txt` para consultar las primeras líneas de nuestra *wordlist*. Con ello vemos que una de las contraseñas probadas ha sido, por ejemplo `princess`. Podemos ver también por ejemplo como se ha la contraseña `harrypotter` y ésta está en el archivo diccionario, cosa que se puede comprobar con `cat rockyou.txt | grep 'harrypotter'`.
+Con este ataque probamos todas las contraseñas del diccionario. Por comodidad podemos ejecutar `head rockyou.txt` para consultar las primeras líneas de nuestra *wordlist*. Con ello vemos que una de las contraseñas probadas ha sido, por ejemplo `princess`. Podemos ver también por ejemplo como se ha la contraseña `harrypotter` y esta está en el archivo diccionario, cosa que se puede comprobar con `cat rockyou.txt | grep 'harrypotter'`.
 
-Solo nos queda comentar el número de contraseñas encontradas. Procediendo de la misma forma que para encontrar el esfuerzo máximo veremos que el número de líneas del archivo `dict_hits.txt` es `156897`, esto es, hemos recuperado `156897` contraseñas en tan solo (revisar) `27,372 s`. Esto supone alrededor de un `4,5 %` del toal de contraseñas del archivo auditado.
+Solo nos queda comentar el número de contraseñas encontradas. Procediendo de la misma forma que para encontrar el esfuerzo máximo veremos que el número de líneas del archivo `dict_hits.txt` es `156897`, esto es, hemos recuperado `156897` contraseñas en tan solo (revisar) `27,372 s`. Esto supone alrededor de un `4,5 %` del total de contraseñas del archivo auditado.
 
 ### Primer ataque con reglas: cambiando mayúsculas por minúsculas y viceversa.
 Ahora vamos a emplear el diccionario `john.txt` como base dado que al ser más pequeño que `rockyou.txt` resulta más manejable mientras que los conceptos siguen siendo idénticos.
 
-En vez de usar el diccionario "tal cual" vamos a alterar sus los caracters de sus palabras de uno en uno de manera que las mayúsculas pasen a ser minúsculas y viceversa. En otras palabras, si nuestro diccionario contuviera la palabra `abc` la nueva versión tendría: `Abc, aBc, abC`. No obstante, la regla que aplicaremos tiene en cuenta palabras de 15 caracteres con lo que cada palabra del diccionario generará 15 nuevas. El inconveniente es que si la palabra tiene menos de 15 caracters, digamos que tiene 7, entonces tendremos 8 veces la misma contraseña repetida en la salida, esto es, comprobaremos la misma contraseña 8 veces. Teniendo ésto en cuenta veremos que si muchas de las contraseñas son relativamente cortas haremos muchas comparaciones totalmente inútiles... Es por ello que nos planteamos trabajar con el diccionario para eliminar todos los duplicados. Haciendo uso de los comandos `sort` y `uniq` podemos ejecutar la siguiente cadena con lo que logramos eliminar todas las palabras repetidas de la lista que se usaría por defecto y que sufre los inconvenientes comentados. Para poder obtener el diccionario modificado con la regla de interés haremos uso de la opción `--stdout` de hashcat que nos permite imprimir las palabras generadas a pantalla tal y como aparece en {4}. Con todo:
+En vez de usar el diccionario "tal cual" vamos a alterar sus los caracteres de sus palabras de uno en uno de manera que las mayúsculas pasen a ser minúsculas y viceversa. En otras palabras, si nuestro diccionario contuviera la palabra `abc` la nueva versión tendría: `Abc, aBc, abC`. No obstante, la regla que aplicaremos tiene en cuenta palabras de 15 caracteres con lo que cada palabra del diccionario generará 15 nuevas. El inconveniente es que si la palabra tiene menos de 15 caracteres, digamos que tiene 7, entonces tendremos 8 veces la misma contraseña repetida en la salida, esto es, comprobaremos la misma contraseña 8 veces. Teniendo esto en cuenta veremos que si muchas de las contraseñas son relativamente cortas haremos muchas comparaciones totalmente inútiles... Es por ello que nos planteamos trabajar con el diccionario para eliminar todos los duplicados. Haciendo uso de los comandos `sort` y `uniq` podemos ejecutar la siguiente cadena con lo que logramos eliminar todas las palabras repetidas de la lista que se usaría por defecto y que sufre los inconvenientes comentados. Para poder obtener el diccionario modificado con la regla de interés haremos uso de la opción `--stdout` de hashcat que nos permite imprimir las palabras generadas a pantalla tal y como aparece en {4}. Con todo:
 
 ```bash
 hashcat -r /usr/share/hashcat/rules/toggles1.rule --stdout john.txt | sort | uniq -u > john_tog_no_originals.txt
@@ -179,7 +179,7 @@ time hashcat -m 0 -a 0 -d 2 --potfile-disable raw-md5.hashes5.txt john.txt
 
 Vemos que tras `11.166 s` se han recuperado exactamente esas `28` contraseñas esperadas. En este caso el esfuerzo máximo será de `3107` *hashes*, el tamaño del diccionario original.
 
-Finalmente vamos a ejecutar el ataque leyendo el diccionario desde disco para que hay igualdad de condiciones. Así, comparamos le diccionario que genera la regla `toggles1.rule` frente a un diccionario sin palabras repetidas. Veremos que se recupera el mismo número de contraseñas (`154`) en un tiempo ligeramente menor con el diccionario "limpio". Los generamos con el siguiente comando y el ataque es idéntico al inmediatamente anterior, tan solo variamos el diccionario usado.
+Finalmente vamos a ejecutar el ataque leyendo el diccionario desde disco para que haya igualdad de condiciones. Así, comparamos le diccionario que genera la regla `toggles1.rule` frente a un diccionario sin palabras repetidas. Veremos que se recupera el mismo número de contraseñas (`154`) en un tiempo ligeramente menor con el diccionario "limpio". Los generamos con el siguiente comando y el ataque es idéntico al inmediatamente anterior, tan solo variamos el diccionario usado.
 
 ```bash
 # Contiene las originals y las modificadas con duplicados
@@ -189,7 +189,7 @@ hashcat -r /usr/share/hashcat/rules/toggles1.rule --stdout john.txt > john_tog.t
 hashcat -r /usr/share/hashcat/rules/toggles1.rule --stdout john.txt | awk '!foo[$0]++' > john_tog_clean.txt
 ```
 
-Solo nos queda por escribir una de las contraseñas que vaya a ser probada. Como el diccionario original contiene la palabra `hello` una de las que se intentarán comprobar será `Hello`, por ejemplo. Asimismo reiteramos que una vez que filtramos los diccionarios para encontrar duplicados dependemos de comandos como `wc` para encontrar el esfuerzo máximo ya que éste depende de la longitud de las propias palabras. Solo podmeos afirmar el tamaño del esfuerzo en el primer caso en el que usamos la lista "tal cual", cosa que ya hicimos más arriba.
+Solo nos queda por escribir una de las contraseñas que vaya a ser probada. Como el diccionario original contiene la palabra `hello` una de las que se intentarán comprobar será `Hello`, por ejemplo. Asimismo reiteramos que una vez que filtramos los diccionarios para encontrar duplicados dependemos de comandos como `wc` para encontrar el esfuerzo máximo ya que este depende de la longitud de las propias palabras. Solo podmeos afirmar el tamaño del esfuerzo en el primer caso en el que usamos la lista "tal cual", cosa que ya hicimos más arriba.
 
 # Bibliografía
 {1} - https://wiki.skullsecurity.org/Passwords#Leaked_passwords
