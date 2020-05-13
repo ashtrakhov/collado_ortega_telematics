@@ -165,7 +165,7 @@ def update_difficulty():
 
     blockchain.change_difficulty(n_diff)
 
-    return "New difficulty".format(n_diff), 201
+    return "New difficulty -> {}".format(n_diff), 201
 
 @app.route('/change_max_pending_txs', methods = ['POST'])
 def update_max_pending_txs():
