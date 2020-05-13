@@ -23,13 +23,6 @@ class Blockchain:
         self.chain = []
         self.create_genesis_block()
 
-    def create_genesis_block(self):
-        genesis_block = Block(0, [], 0, "0")
-        # We could try to hardcode the value (nonce = 25163) here as the Genesis Block is always the same!
-        genesis_block.hash = self.proof_of_work(genesis_block)
-        # genesis_block.hash = genesis_block.compute_hash()
-        self.chain.append(genesis_block)
-
     @property
     def last_block(self):
         return self.chain[-1]
@@ -37,6 +30,13 @@ class Blockchain:
 ###################################################################################################################################################
 ################################################################# New/Tweaked Methods #############################################################
 ###################################################################################################################################################
+
+    def create_genesis_block(self):
+        genesis_block = Block(0, [], 0, "0")
+        # We could try to hardcode the value (nonce = 25163) here as the Genesis Block is always the same!
+        genesis_block.hash = self.proof_of_work(genesis_block)
+        # genesis_block.hash = genesis_block.compute_hash()
+        self.chain.append(genesis_block)
 
     @property
     def unconfirmed_tx(self):
@@ -76,10 +76,6 @@ class Blockchain:
 
         return result
 
-###################################################################################################################################################
-###################################################################################################################################################
-###################################################################################################################################################
-
     @staticmethod
     def change_difficulty(diff):
         Blockchain.difficulty = diff
@@ -87,6 +83,10 @@ class Blockchain:
     @staticmethod
     def change_max_pending_txs(pend):
         Blockchain.max_unconfirmed_txs = pend
+
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
 
     def add_block(self, block, proof):
         previous_hash = self.last_block.hash
@@ -165,7 +165,7 @@ def update_difficulty():
 
     blockchain.change_difficulty(n_diff)
 
-    return "New difficulty".format(n_diff), 201
+    return "New difficulty -> {}".format(n_diff), 201
 
 @app.route('/change_max_pending_txs', methods = ['POST'])
 def update_max_pending_txs():
