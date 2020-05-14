@@ -59,7 +59,6 @@ Nótese que no aprovechamos las contraseñas ya descubiertas para agilizar ataqu
 Con todo lo anterior el comando y su resultado son:
 ```bash
 $ time hashcat -m 0 -a 0 -d 2 -o dict_hits.txt --potfile-disable raw-md5.hashes5.txt rockyou.txt
-pablo@stewjon:~$ time hashcat -m 0 -a 0 -d 2 -o dict_hits.txt --potfile-disable raw-md5.hashes5.txt rockyou.txt
 hashcat (v5.1.0) starting...
 
 * Device #1: Not a native Intel OpenCL runtime. Expect massive speed loss.
@@ -72,44 +71,8 @@ OpenCL Platform #2: Intel(R) Corporation
 ========================================
 * Device #2: Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz, 3982/15928 MB allocatable, 4MCU
 
-Bitmap table overflowed at 18 bits.
-This typically happens with too many hashes and reduces your performance.
-You can increase the bitmap table size with --bitmap-max, but
-this creates a trade-off between L2-cache and bitmap efficiency.
-It is therefore not guaranteed to restore full performance.
+# Parte de la salida omitida por claridad
 
-Hashes: 3500000 digests; 3500000 unique digests, 1 unique salts
-Bitmaps: 18 bits, 262144 entries, 0x0003ffff mask, 1048576 bytes, 5/13 rotates
-Rules: 1
-
-Applicable optimizers:
-* Zero-Byte
-* Early-Skip
-* Not-Salted
-* Not-Iterated
-* Single-Salt
-* Raw-Hash
-
-Minimum password length supported by kernel: 0
-Maximum password length supported by kernel: 256
-
-ATTENTION! Pure (unoptimized) OpenCL kernels selected.
-This enables cracking passwords and salts > length 32 but for the price of drastically reduced performance.
-If you want to switch to optimized OpenCL kernels, append -O to your commandline.
-
-Watchdog: Hardware monitoring interface not found on your system.
-Watchdog: Temperature abort trigger disabled.
-
-* Device #2: build_opts '-cl-std=CL1.2 -I OpenCL -I /usr/share/hashcat/OpenCL -D LOCAL_MEM_TYPE=2 -D VENDOR_ID=8 -D CUDA_ARCH=0 -D AMD_ROCM=0 -D VECT_SIZE=8 -D DEVICE_TYPE=2 -D DGST_R0=0 -D DGST_R1=3 -D DGST_R2=2 -D DGST_R3=1 -D DGST_ELEM=4 -D KERN_TYPE=0 -D _unroll'
-Dictionary cache hit:
-* Filename..: rockyou.txt
-* Passwords.: 14344384
-* Bytes.....: 139921497
-* Keyspace..: 14344384
-
-Approaching final keyspace - workload adjusted.  
-
-                                                 
 Session..........: hashcat
 Status...........: Exhausted
 Hash.Type........: MD5
@@ -137,9 +100,9 @@ sys     0m8.800s
 
 Queremos señalar que precedemos la llamada a *hashcat* con el comando `time` para poder obtener los tiempos reales de ejecución. En este caso es de `22,372 s`. Asimismo y dado que estamos redireccionando la salida de hashes encontrados a un archivo solo vamos a incluir esta salida completa un vez para poder aprovechar al máximo las hojas de las que disponemos.
 
-Así, podemos intentar comprobar el número de contraseñas del diccionario `rockyou.txt` con `wc -l rockyou.txt`. Con ello vemos que, en teoría, hemos probado `14344391` contraseñas o lo que es lo mismo, el esfuerzo máximo del ataque habría sido de `14344391` hashes. Esta correspondencia directa entre el número de contraseñas y el esfuerzo máximo se debe a que, tal y como comentábamos, no estamos alterando el diccionario de ninguna manera. No obstante, la salida del program nos indica que se han probado `14344238` contraseñas, `7` menos de las que esperabamos probar. Así, consultando el archivo con `tail -n 20 rockyou.txt` veremos que éste incluye algunas líneas en blanco que *hashcat* no estará comprobando como contraseña o eso creemos. En definitiva, el valor correcto es el que se indica en la salida del programa. Además, la correspondencia número de contraseñas-esfuerzo máximo se mantiene intacta.
+Así, podemos intentar comprobar el número de contraseñas del diccionario `rockyou.txt` con `wc -l rockyou.txt`. Con ello vemos que, en teoría, hemos probado `14344391` contraseñas o lo que es lo mismo, el esfuerzo máximo del ataque habría sido de `14344391` hashes. Esta correspondencia directa entre el número de contraseñas y el esfuerzo máximo se debe a que, tal y como comentábamos, no estamos alterando el diccionario de ninguna manera. No obstante, la salida del program nos indica que se han probado `14344384` contraseñas, `7` menos de las que esperabamos probar. Así, consultando el archivo con `tail -n 20 rockyou.txt` veremos que éste incluye algunas líneas en blanco que *hashcat* no estará comprobando como contraseña o eso creemos. En definitiva, el valor correcto es el que se indica en la salida del programa. Además, la correspondencia número de contraseñas-esfuerzo máximo se mantiene intacta.
 
-Con este ataque probamos todas las contraseñas del diccionario. Por comodidad podemos ejecutar `head rockyou.txt` para consultar las primeras líneas de nuestra *wordlist*. Con ello vemos que una de las contraseñas probadas ha sido, por ejemplo `princess`. Podemos ver también por ejemplo como se ha la contraseña `harrypotter` y esta está en el archivo diccionario, cosa que se puede comprobar con `cat rockyou.txt | grep 'harrypotter'`.
+Con este ataque probamos todas las contraseñas del diccionario. Por comodidad podemos ejecutar `head rockyou.txt` para consultar las primeras líneas de nuestra *wordlist*. Con ello vemos que una de las contraseñas probadas ha sido, por ejemplo `princess`. Podemos ver también por ejemplo como se ha probado la contraseña `harrypotter` y esta está en el archivo diccionario, cosa que se puede comprobar con `cat rockyou.txt | grep 'harrypotter'`.
 
 Solo nos queda comentar el número de contraseñas encontradas. Procediendo de la misma forma que para encontrar el esfuerzo máximo veremos que el número de líneas del archivo `dict_hits.txt` es `156897`, esto es, hemos recuperado `156897` contraseñas en tan solo (revisar) `27,372 s`. Esto supone alrededor de un `4,5 %` del total de contraseñas del archivo auditado.
 
@@ -161,7 +124,7 @@ Con todo, señalamos los ataques que hemos probado así como los aciertos y los 
 $ time hashcat -m 0 -a 0 -d 2 -r /usr/share/hashcat/rules/toggles1.rule --potfile-disable raw-md5.hashes5.txt john.txt
 ```
 
-Sabiendo que `john.txt` se compone de `3107` contraseñas y teniendo en cuenta que la regla genera 15 contraseñas por cada original se prueban `3107 * 15 = 46605` contraseñas, muchas de las cuales son repetidas. Esto es, el  esfuerzo máximo es de `46605` hashes. El ataque se lleva a cabo en `11.164 s` y se recuperan `154` contraseñas.
+Sabiendo que `john.txt` se compone de `3107` contraseñas y teniendo en cuenta que la regla genera 15 contraseñas por cada original se prueban `3107 * 15 = 46605` contraseñas, muchas de las cuales son repetidas. Esto es, el  esfuerzo máximo es de `46605` hashes. El ataque se lleva a cabo en `11,164 s` y se recuperan `154` contraseñas.
 
 Si ejecutamos el ataque con el archivo `john_tog_no_originals.txt` que generamos antes:
 
@@ -189,7 +152,7 @@ hashcat -r /usr/share/hashcat/rules/toggles1.rule --stdout john.txt > john_tog.t
 hashcat -r /usr/share/hashcat/rules/toggles1.rule --stdout john.txt | awk '!foo[$0]++' > john_tog_clean.txt
 ```
 
-Solo nos queda por escribir una de las contraseñas que vaya a ser probada. Como el diccionario original contiene la palabra `hello` una de las que se intentarán comprobar será `Hello`, por ejemplo. Asimismo reiteramos que una vez que filtramos los diccionarios para encontrar duplicados dependemos de comandos como `wc` para encontrar el esfuerzo máximo ya que este depende de la longitud de las propias palabras. Solo podmeos afirmar el tamaño del esfuerzo en el primer caso en el que usamos la lista "tal cual", cosa que ya hicimos más arriba.
+Solo nos queda por escribir una de las contraseñas que vaya a ser probada. Como el diccionario original contiene la palabra `hello` una de las que se intentarán comprobar será `Hello`, por ejemplo. Asimismo reiteramos que una vez que filtramos los diccionarios para encontrar duplicados dependemos de comandos como `wc` para encontrar el esfuerzo máximo ya que este depende de la longitud de las propias palabras. Solo podemos afirmar el tamaño del esfuerzo en el primer caso en el que usamos la lista "tal cual", cosa que ya hicimos más arriba.
 
 # Bibliografía
 {1} - https://wiki.skullsecurity.org/Passwords#Leaked_passwords
