@@ -142,7 +142,7 @@ time hashcat -m 0 -a 0 -d 2 -r /usr/share/hashcat/rules/toggles1.rule \
     --potfile-disable raw-md5.hashes5.txt john.txt
             \end{minted}
 
-            Si ejecutamos el ataque con el diccionario filtrado veremos que recuperaremos el mismo número de contraseñas en un tiempo ligeramente menor ya que en este caso solo probamos $RELLENAR$ contraseñas al haber eliminado los duplicados. Para obtener el esfuerzo máximo en este caso dependemos de la orden \texttt{wc -l john\_tog\_clean.txt} ya que este depende de la longitud de las propias palabras. El número de duplicados depende del número de caracteres de cada palabra con lo que solo podemos afirmar el esfuerzo máximo del diccionario generado con la regla sin modificar de manera determinista. Ejecutar este ataque supone lanzar:
+            Si ejecutamos el ataque con el diccionario filtrado veremos que recuperaremos el mismo número de contraseñas en un tiempo ligeramente menor ya que en este caso solo probamos $20814$ contraseñas al haber eliminado los duplicados. Para obtener el esfuerzo máximo en este caso dependemos de la orden \texttt{wc -l john\_tog\_clean.txt} ya que este depende de la longitud de las propias palabras. El número de duplicados depende del número de caracteres de cada palabra con lo que solo podemos afirmar el esfuerzo máximo del diccionario generado con la regla sin modificar de manera determinista. Ejecutar este ataque supone lanzar:
 
             \begin{minted}{bash}
 time hashcat -m 0 -a 0 -d 2 --potfile-disable raw-md5.hashes5.txt john_tog_clean.txt
